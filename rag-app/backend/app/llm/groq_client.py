@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import json
+from typing import AsyncIterator
 
-from groq import Groq
+from groq import AsyncGroq
 
-from app.llm.prompts import build_generation_prompt, build_judge_prompt, build_query_expansion_prompt
+from app.llm.prompts import render_generation, render_judge, render_query_expansion
 from app.llm.verification import verify_and_score_claims
 from app.models.schemas import JudgeVerdict, Judgment
 
@@ -13,23 +14,6 @@ from app.models.schemas import JudgeVerdict, Judgment
 # false at every level -- hand-written here rather than derived from a
 # Pydantic model's auto-generated (ref-based) schema, since strict-mode
 # support for nested $refs varies by provider and isn't worth risking.
-_GENERATED_ANSWER_SCHEMA = {
-    "type": "json_schema",
-    "json_schema": {
-        "name": "generated_answer",
-        "strict": True,
-        "schema": {
-            "type": "object",
-            "properties": {
-                "answer": {"type": "string"},
-                "used_source_indices": {"type": "array", "items": {"type": "integer"}},
-            },
-            "required": ["answer", "used_source_indices"],
-            "additionalProperties": False,
-        },
-    },
-}
-
 _JUDGE_OUTPUT_SCHEMA = {
     "type": "json_schema",
     "json_schema": {
@@ -84,12 +68,20 @@ class GroqClient:
     """
 
     def __init__(self, api_key: str, generator_model: str, judge_model: str) -> None:
-        self._client = Groq(api_key=api_key)
+        self._client = AsyncGroq(api_key=api_key)
         self._generator_model = generator_model
         self._judge_model = judge_model
 
-    def _call(self, model: str, prompt: str, schema: dict, temperature: float) -> dict:
-        response = self._client.chat.completions.create(
+    @property
+    def generator_model_name(self) -> str:
+        return self._generator_model
+
+    @property
+    def judge_model_name(self) -> str:
+        return self._judge_model
+
+    async def _call(self, model: str, prompt: str, schema: dict, temperature: float) -> dict:
+        response = await self._client.chat.completions.create(
             model=model,
             messages=[{"role": "user", "content": prompt}],
             response_format=schema,
@@ -97,16 +89,31 @@ class GroqClient:
         )
         return json.loads(response.choices[0].message.content or "{}")
 
-    def expand_query(self, question: str, variant_count: int, temperature: float) -> list[str]:
-        data = self._call(self._generator_model, build_query_expansion_prompt(question, variant_count), _QUERY_VARIANTS_SCHEMA, temperature)
+    async def expand_query(self, question: str, variant_count: int, temperature: float) -> list[str]:
+        data = await self._call(self._generator_model, render_query_expansion(question, variant_count), _QUERY_VARIANTS_SCHEMA, temperature)
         return data.get("variants", [])
 
-    def generate_answer(self, question: str, numbered_context: str, temperature: float) -> tuple[str, list[int]]:
-        data = self._call(self._generator_model, build_generation_prompt(question, numbered_context), _GENERATED_ANSWER_SCHEMA, temperature)
-        return data["answer"], data["used_source_indices"]
+    async def stream_answer(
+        self, question: str, numbered_context: str, temperature: float, prompt_version: str | None = None
+    ) -> AsyncIterator[str]:
+        """No `response_format` here -- structured JSON output and token
+        streaming don't combine on this API either. Which sources got cited
+        is recovered by `chat_service.py` via regex over the accumulated
+        text, relying on the prompt's inline-citation rule.
+        """
+        stream = await self._client.chat.completions.create(
+            model=self._generator_model,
+            messages=[{"role": "user", "content": render_generation(question, numbered_context, version=prompt_version)}],
+            temperature=temperature,
+            stream=True,
+        )
+        async for chunk in stream:
+            delta = chunk.choices[0].delta.content
+            if delta:
+                yield delta
 
-    def judge_answer(self, question: str, answer: str, numbered_context: str, temperature: float) -> Judgment:
-        data = self._call(self._judge_model, build_judge_prompt(question, answer, numbered_context), _JUDGE_OUTPUT_SCHEMA, temperature)
+    async def judge_answer(self, question: str, answer: str, numbered_context: str, temperature: float) -> Judgment:
+        data = await self._call(self._judge_model, render_judge(question, answer, numbered_context), _JUDGE_OUTPUT_SCHEMA, temperature)
 
         raw_claims = [(c["claim"], c["supported"], c["evidence_quote"]) for c in data.get("claims", [])]
         verified_claims, confidence = verify_and_score_claims(raw_claims, numbered_context, fallback_confidence=data.get("confidence", 0))

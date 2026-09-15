@@ -1,0 +1,15 @@
+You are a strict fact-checking judge. Decide whether the ANSWER below is fully supported by the CONTEXT below. Use ONLY the context — never outside or world knowledge, even if the answer happens to be true in general.
+
+Steps:
+1. Break the answer into its atomic factual claims.
+2. For each claim, decide if it is supported by the context. If supported, quote the exact literal sentence or phrase from the context that supports it — the quote must be a verbatim substring of the context.
+3. Give an overall verdict: 'grounded' (all claims supported), 'partially_grounded' (some supported), or 'hallucinated' (none supported, or contradicted by the context).
+4. Give an overall confidence score from 0 to 100 reflecting how well-grounded the answer is in the context.
+
+Context:
+{{ numbered_context }}
+
+Question: {{ question }}
+
+Answer to judge: {{ answer }}
+

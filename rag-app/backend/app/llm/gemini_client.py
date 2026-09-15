@@ -1,21 +1,18 @@
 from __future__ import annotations
 
+from typing import AsyncIterator
+
 from google import genai
 from google.genai import types
 from pydantic import BaseModel
 
-from app.llm.prompts import build_generation_prompt, build_judge_prompt, build_query_expansion_prompt
+from app.llm.prompts import render_generation, render_judge, render_query_expansion
 from app.llm.verification import verify_and_score_claims
 from app.models.schemas import ClaimVerdict, JudgeVerdict, Judgment
 
 
 class _QueryVariants(BaseModel):
     variants: list[str]
-
-
-class _GeneratedAnswer(BaseModel):
-    answer: str
-    used_source_indices: list[int]
 
 
 class _JudgeOutput(BaseModel):
@@ -26,12 +23,12 @@ class _JudgeOutput(BaseModel):
 
 
 class GeminiClient:
-    """Two independent Gemini calls: `generate_answer` (the RAG answer,
-    grounded strictly in the numbered context) and `judge_answer` (a
-    separate, differently-tiered model that fact-checks the answer against
-    that same context). Running the judge on a different model tier than
-    the generator mitigates the documented self-preference bias of
-    same-family LLM judges.
+    """Two independent Gemini calls: `stream_answer` (the RAG answer,
+    grounded strictly in the numbered context, streamed token-by-token) and
+    `judge_answer` (a separate, differently-tiered model that fact-checks
+    the answer against that same context). Running the judge on a different
+    model tier than the generator mitigates the documented self-preference
+    bias of same-family LLM judges.
     """
 
     def __init__(self, api_key: str, generator_model: str, judge_model: str) -> None:
@@ -39,14 +36,22 @@ class GeminiClient:
         self._generator_model = generator_model
         self._judge_model = judge_model
 
-    def expand_query(self, question: str, variant_count: int, temperature: float) -> list[str]:
+    @property
+    def generator_model_name(self) -> str:
+        return self._generator_model
+
+    @property
+    def judge_model_name(self) -> str:
+        return self._judge_model
+
+    async def expand_query(self, question: str, variant_count: int, temperature: float) -> list[str]:
         """Alternate phrasings of the same question, for multi-query retrieval --
         run on the (cheaper, faster) generator model since this is a simple
         rewrite task, not a task needing the judge's separate tier.
         """
-        response = self._client.models.generate_content(
+        response = await self._client.aio.models.generate_content(
             model=self._generator_model,
-            contents=build_query_expansion_prompt(question, variant_count),
+            contents=render_query_expansion(question, variant_count),
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=_QueryVariants,
@@ -56,23 +61,27 @@ class GeminiClient:
         parsed: _QueryVariants = response.parsed
         return parsed.variants
 
-    def generate_answer(self, question: str, numbered_context: str, temperature: float) -> tuple[str, list[int]]:
-        response = self._client.models.generate_content(
+    async def stream_answer(
+        self, question: str, numbered_context: str, temperature: float, prompt_version: str | None = None
+    ) -> AsyncIterator[str]:
+        """No `response_schema` here -- structured JSON output and token
+        streaming are mutually exclusive on this API. Which sources got
+        cited is recovered by `chat_service.py` via regex over the
+        accumulated text, relying on the prompt's inline-citation rule.
+        """
+        stream = await self._client.aio.models.generate_content_stream(
             model=self._generator_model,
-            contents=build_generation_prompt(question, numbered_context),
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json",
-                response_schema=_GeneratedAnswer,
-                temperature=temperature,
-            ),
+            contents=render_generation(question, numbered_context, version=prompt_version),
+            config=types.GenerateContentConfig(temperature=temperature),
         )
-        parsed: _GeneratedAnswer = response.parsed
-        return parsed.answer, parsed.used_source_indices
+        async for chunk in stream:
+            if chunk.text:
+                yield chunk.text
 
-    def judge_answer(self, question: str, answer: str, numbered_context: str, temperature: float) -> Judgment:
-        response = self._client.models.generate_content(
+    async def judge_answer(self, question: str, answer: str, numbered_context: str, temperature: float) -> Judgment:
+        response = await self._client.aio.models.generate_content(
             model=self._judge_model,
-            contents=build_judge_prompt(question, answer, numbered_context),
+            contents=render_judge(question, answer, numbered_context),
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=_JudgeOutput,

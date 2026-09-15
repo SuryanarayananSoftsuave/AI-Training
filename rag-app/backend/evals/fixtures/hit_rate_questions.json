@@ -1,0 +1,24 @@
+{
+  "_comment": "Week 4 deliverable fixture. expected_filenames is the set of acceptable source filenames -- a question 'hits' if ANY of them appears among the evaluated top-k chunks by filename. Several questions deliberately target the leave-policy-v2023-vs-v2024 near-duplicate collision (same section structure, different entitlement numbers) that MMR is meant to help with.",
+  "questions": [
+    {"id": "q01", "question": "How many casual leave days do employees get?", "expected_filenames": ["leave-policy-v2024.pdf"], "notes": "current entitlement (15 days) -- near-duplicate 2023 chunks (12 days) compete for top-3"},
+    {"id": "q02", "question": "What is the current sick leave entitlement?", "expected_filenames": ["leave-policy-v2024.pdf"], "notes": "current entitlement (12 days) vs. 2023's 10 days"},
+    {"id": "q03", "question": "How many days of earned leave carry over to the next year?", "expected_filenames": ["leave-policy-v2024.pdf"], "notes": "current cap (12 days) vs. 2023's 10 days"},
+    {"id": "q04", "question": "What was the casual leave entitlement under the 2023 policy?", "expected_filenames": ["leave-policy-v2023.pdf"], "notes": "explicitly asks for historical data -- the trap in reverse, retrieval should NOT always default to the newest doc"},
+    {"id": "q05", "question": "Is there a bereavement leave policy?", "expected_filenames": ["leave-policy-v2024.pdf"], "notes": "only exists in the 2024 edition"},
+    {"id": "q06", "question": "How many remote work days per week are employees allowed?", "expected_filenames": ["remote-work-policy.pdf"]},
+    {"id": "q07", "question": "What are the core hours for remote workers?", "expected_filenames": ["remote-work-policy.pdf"]},
+    {"id": "q08", "question": "What is the home office stipend amount?", "expected_filenames": ["remote-work-policy.pdf"]},
+    {"id": "q09", "question": "How many days do I have to submit an expense claim?", "expected_filenames": ["expense-reimbursement-policy.pdf"]},
+    {"id": "q10", "question": "What's the approval threshold for expenses above $500?", "expected_filenames": ["expense-reimbursement-policy.pdf"]},
+    {"id": "q11", "question": "Can I expense alcohol at a client dinner?", "expected_filenames": ["expense-reimbursement-policy.pdf"]},
+    {"id": "q12", "question": "What value of gift needs to be disclosed under the code of conduct?", "expected_filenames": ["code-of-conduct-policy.pdf"]},
+    {"id": "q13", "question": "How do I report a code of conduct violation?", "expected_filenames": ["code-of-conduct-policy.pdf"]},
+    {"id": "q14", "question": "What is the monthly premium for employee-only health insurance?", "expected_filenames": ["benefits-and-insurance-policy.pdf"]},
+    {"id": "q15", "question": "When is the open enrollment period for benefits?", "expected_filenames": ["benefits-and-insurance-policy.pdf"]},
+    {"id": "q16", "question": "How often are performance reviews conducted?", "expected_filenames": ["performance-review-policy.pdf"]},
+    {"id": "q17", "question": "What rating is needed for promotion consideration?", "expected_filenames": ["performance-review-policy.pdf"]},
+    {"id": "q18", "question": "What is the notice period for resignation in India?", "expected_filenames": ["notice-period-and-termination-policy.pdf"]},
+    {"id": "q19", "question": "What is the notice period for resignation in the United States?", "expected_filenames": ["notice-period-and-termination-policy.pdf"]}
+  ]
+}

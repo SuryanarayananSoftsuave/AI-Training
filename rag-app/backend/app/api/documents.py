@@ -11,6 +11,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, UploadFi
 
 from app.core.config import Settings, get_settings
 from app.core.dependencies import get_registry, get_store
+from app.ingestion.parser import SUPPORTED_EXTENSIONS
 from app.models.schemas import DocumentListResponse, DocumentRecord, DocumentStatus, UploadResponse
 from app.registry.json_store import DocumentRegistry
 from app.retrieval.qdrant_store import QdrantStore
@@ -29,9 +30,16 @@ async def upload_document(
     registry: DocumentRegistry = Depends(get_registry),
     store: QdrantStore = Depends(get_store),
 ) -> UploadResponse:
-    is_pdf_name = (file.filename or "").lower().endswith(".pdf")
-    if file.content_type not in ("application/pdf", "application/octet-stream") and not is_pdf_name:
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="only PDF files are accepted")
+    # Validated purely by extension, not content-type -- browsers send wildly
+    # inconsistent MIME types for docx/xlsx/etc. (often generic
+    # "application/octet-stream"), so the extension is the only reliable
+    # signal, and it's what `parse_document` dispatches on anyway.
+    original_suffix = Path(file.filename or "").suffix.lower()
+    if original_suffix not in SUPPORTED_EXTENSIONS:
+        raise HTTPException(
+            status.HTTP_400_BAD_REQUEST,
+            detail=f"unsupported file type '{original_suffix or '(none)'}' -- accepted: {', '.join(sorted(SUPPORTED_EXTENSIONS))}",
+        )
 
     uploads_dir = Path(settings.uploads_dir)
     uploads_dir.mkdir(parents=True, exist_ok=True)
@@ -78,12 +86,12 @@ async def upload_document(
         tmp_path.replace(stored_path)
     else:
         doc_id = str(uuid4())
-        stored_path = uploads_dir / f"{doc_id}.pdf"
+        stored_path = uploads_dir / f"{doc_id}{original_suffix}"
         tmp_path.rename(stored_path)
 
     record = DocumentRecord(
         doc_id=doc_id,
-        original_filename=file.filename or f"{doc_id}.pdf",
+        original_filename=file.filename or f"{doc_id}{original_suffix}",
         stored_path=str(stored_path),
         file_hash=file_hash,
         file_size_bytes=size,
@@ -107,13 +115,13 @@ async def upload_document(
 
 
 @router.get("", response_model=DocumentListResponse)
-def list_documents(registry: DocumentRegistry = Depends(get_registry)) -> DocumentListResponse:
+async def list_documents(registry: DocumentRegistry = Depends(get_registry)) -> DocumentListResponse:
     docs = sorted(registry.list_all(), key=lambda d: d.upload_timestamp, reverse=True)
     return DocumentListResponse(documents=docs)
 
 
 @router.get("/{doc_id}", response_model=DocumentRecord)
-def get_document(doc_id: str, registry: DocumentRegistry = Depends(get_registry)) -> DocumentRecord:
+async def get_document(doc_id: str, registry: DocumentRegistry = Depends(get_registry)) -> DocumentRecord:
     record = registry.get_by_id(doc_id)
     if record is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=f"no document with id '{doc_id}'")
@@ -121,7 +129,7 @@ def get_document(doc_id: str, registry: DocumentRegistry = Depends(get_registry)
 
 
 @router.delete("/{doc_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_document(
+async def delete_document(
     doc_id: str,
     registry: DocumentRegistry = Depends(get_registry),
     store: QdrantStore = Depends(get_store),
@@ -129,5 +137,5 @@ def delete_document(
     record = registry.delete_by_id(doc_id)
     if record is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=f"no document with id '{doc_id}'")
-    store.delete_by_doc_id(doc_id)
+    await store.delete_by_doc_id(doc_id)
     Path(record.stored_path).unlink(missing_ok=True)

@@ -44,9 +44,10 @@ class ChatRequest(BaseModel):
     query: str = Field(min_length=1, max_length=2000)
     use_keyword_search: bool = False
     use_query_expansion: bool = False
+    use_mmr: bool = False
     generator_provider: LLMProvider = "gemini"
     judge_provider: LLMProvider = "gemini"
-    generator_temperature: float = Field(default=0.2, ge=0.0, le=2.0)
+    generator_temperature: float = Field(default=0.7, ge=0.0, le=2.0)
     judge_temperature: float = Field(default=0.0, ge=0.0, le=2.0)
     top_k: int = Field(default=6, ge=1, le=20)
     doc_ids: list[str] | None = None
@@ -74,6 +75,7 @@ class JudgeVerdict(str, Enum):
     HALLUCINATED = "hallucinated"
     NO_ANSWER = "no_answer"
     OUT_OF_SCOPE = "out_of_scope"
+    JUDGE_UNAVAILABLE = "judge_unavailable"
 
 
 class Judgment(BaseModel):
@@ -90,11 +92,19 @@ class RetrievalDebug(BaseModel):
     query_variants: list[str] | None = None  # the extra phrasings generated, when query expansion is on
     generator_provider: LLMProvider = "gemini"
     judge_provider: LLMProvider = "gemini"
-    generator_temperature: float = 0.2
+    generator_temperature: float = 0.7
     judge_temperature: float = 0.0
+    use_mmr: bool = False
 
 
-class ChatResponse(BaseModel):
+class ChatStreamFinal(BaseModel):
+    """The one non-streamed event in a `/chat` SSE response -- sent once,
+    after every `delta` chunk of the streamed answer text, carrying
+    everything that's only knowable once generation AND judging have both
+    finished (or that short-circuits generation/judging entirely, for the
+    no-candidates and off-topic gates).
+    """
+
     answer: str
     citations: list[Citation]
     judgment: Judgment
