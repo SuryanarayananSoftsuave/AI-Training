@@ -1,0 +1,15 @@
+{
+  "_comment": "10 employee questions for the Week 7 agent-vs-workflow race (W7-Task-Set-C.md requirement #3). Pairs (q1,q2), (q3,q4), (q5,q6) share a jurisdiction but differ in tenure across the 2-year long-service threshold -- these 3 pairs are where step 3 (get_notice_period_rule) genuinely depends on what step 2 (get_employee_record) found, per requirement #3's explicit ask.",
+  "questions": [
+    {"id": "q1", "employee_id": "E1", "question": "What is the notice period for employee E1 if they resign?"},
+    {"id": "q2", "employee_id": "E2", "question": "What is the notice period for employee E2 if they resign?"},
+    {"id": "q3", "employee_id": "E3", "question": "How many days of notice does employee E3 need to give?"},
+    {"id": "q4", "employee_id": "E4", "question": "How many days of notice does employee E4 need to give?"},
+    {"id": "q5", "employee_id": "E5", "question": "What notice period applies to employee E5?"},
+    {"id": "q6", "employee_id": "E6", "question": "What notice period applies to employee E6?"},
+    {"id": "q7", "employee_id": "E7", "question": "Employee E7 wants to resign -- what is their required notice period?"},
+    {"id": "q8", "employee_id": "E8", "question": "Employee E8 wants to resign -- what is their required notice period?"},
+    {"id": "q9", "employee_id": "E9", "question": "Employee E9 wants to resign -- what is their required notice period?"},
+    {"id": "q10", "employee_id": "E10", "question": "Employee E10 wants to resign -- what is their required notice period?"}
+  ]
+}

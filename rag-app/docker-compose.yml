@@ -41,7 +41,7 @@ services:
     ports:
       - 127.0.0.1:3030:3030
     environment: &langfuse-worker-env
-      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3001}
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:e56ffa6bb051096edd27caf6@postgres:5432/postgres}
       SALT: ${SALT:-a16536df34d8b7529aeb1b90be1de79d}
       ENCRYPTION_KEY: ${ENCRYPTION_KEY:-4827ada190eea516032c3404a73df338fb96fcc3ba83b70c44123b8391a56565}
@@ -87,7 +87,7 @@ services:
     restart: always
     depends_on: *langfuse-depends-on
     ports:
-      - 3000:3000
+      - 3001:3000
     environment:
       <<: *langfuse-worker-env
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-2aa2d5e5cfc0718626fc4988755e48bb}
@@ -155,8 +155,11 @@ services:
     command: >
       --requirepass ${REDIS_AUTH:-de4e94e092736f6bcc0686dc}
       --maxmemory-policy noeviction
-    ports:
-      - 127.0.0.1:6379:6379
+    # No host port published -- only langfuse-web/langfuse-worker ever talk
+    # to redis, and they do it over the internal Docker network by service
+    # name (REDIS_HOST=redis), never via localhost. Publishing 6379 to the
+    # host isn't needed and was hitting a Windows-specific bind failure
+    # (Hyper-V/WSL2 reserving the port, or a local Redis already using it).
     volumes:
       - langfuse_redis_data:/data
     healthcheck:

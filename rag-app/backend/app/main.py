@@ -11,16 +11,18 @@ from fastapi.responses import JSONResponse
 from langfuse import Langfuse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import chat, documents, health
+from app.api import agents, chat, documents, evals, health
 from app.core.config import get_settings
 from app.ingestion.embedder import get_embedder
 from app.llm.gemini_client import GeminiClient
 from app.llm.groq_client import GroqClient
 from app.models.schemas import DocumentStatus, ErrorResponse
 from app.registry.json_store import DocumentRegistry
+from app.registry.session_store import SessionStore
 from app.retrieval.qdrant_store import QdrantStore
 from app.retrieval.reranker import get_reranker
 from app.trace.store import TraceStore
+from agents.conversation import ConversationState
 
 
 class _BelowLevelFilter(logging.Filter):
@@ -99,6 +101,8 @@ async def lifespan(app: FastAPI):
     registry = DocumentRegistry(settings.registry_path)
     _reconcile_interrupted_ingestions(registry)
 
+    session_store = SessionStore(settings.session_store_path)
+
     langfuse_client: Langfuse | None = None
     if settings.langfuse_enabled:
         langfuse_client = Langfuse(
@@ -113,6 +117,10 @@ async def lifespan(app: FastAPI):
     app.state.settings = settings
     app.state.registry = registry
     app.state.store = store
+    app.state.session_store = session_store
+    # In-memory only, by design: a real restart empties this dict, leaving
+    # session_store above as the sole thing that survives it (Week 7 bonus).
+    app.state.agent_conversations: dict[str, ConversationState] = {}
     app.state.trace_store = TraceStore(settings.trace_success_log_path, settings.trace_failure_log_path)
     app.state.langfuse_client = langfuse_client
     app.state.llm_clients = {
@@ -153,3 +161,5 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 app.include_router(documents.router)
 app.include_router(chat.router)
 app.include_router(health.router)
+app.include_router(agents.router)
+app.include_router(evals.router)

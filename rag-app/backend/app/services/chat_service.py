@@ -142,6 +142,7 @@ async def answer_query(
     judge_temperature: float,
     trace_store: TraceStore | None = None,
     langfuse: Langfuse | None = None,
+    skip_judge: bool = False,
 ) -> AsyncIterator[AnswerEvent]:
     """Optionally expand the question into a few alternate phrasings (multi-
     query retrieval), retrieve for the original question and every variant
@@ -156,6 +157,13 @@ async def answer_query(
     exactly one ("final", ChatStreamFinal) event. The no-candidates and
     off-topic-gate-#1 short-circuits fire before any generation call, so
     they yield only a single "final" event with no "delta"s at all.
+
+    `skip_judge=True` (Week 6 eval harness only -- never set by the live
+    `/chat` route) generates the answer and citations exactly as normal but
+    never calls `judge.judge_answer`, so a blind human label collected
+    against this answer is provably uninfluenced by any judge verdict --
+    the judge can then be run separately, after labeling, against the same
+    answer. Yields `judgment=None` in the final event in that case.
 
     If `trace_store` is given, a `ChatTrace` is recorded in a `finally`
     block wrapping the whole function -- this fires on every exit path,
@@ -414,6 +422,7 @@ async def answer_query(
                 doc_id=point.payload["doc_id"],
                 filename=point.payload["filename"],
                 page_number=point.payload.get("page_number"),
+                section_heading=point.payload.get("section_heading"),
                 chunk_id=str(point.id),
                 snippet=point.payload["text"][:280],
                 rerank_score=round(score, 4),
@@ -422,55 +431,61 @@ async def answer_query(
             if (i + 1) in used_indices
         ]
 
-        judge_span = (
-            root_span.start_observation(name="judge", as_type="generation", model=judge.judge_model_name)
-            if root_span is not None
-            else None
-        )
-        if judge_span is not None:
-            judge_span.update(
-                input={"question": query, "answer": answer_text},
-                metadata={"provider": judge_provider, "temperature": judge_temperature},
-            )
-
-        step_start = time.monotonic()
-        try:
-            # A real, live-observed failure mode: the judge call is an
-            # external API boundary (a separate provider request from
-            # generation), and a transient provider outage here (e.g. a 503
-            # "high demand") shouldn't crash a request whose answer already
-            # generated successfully. Degrade to a JUDGE_UNAVAILABLE verdict
-            # instead -- both so the user still gets their answer, and so the
-            # trace honestly records that this specific call failed, rather
-            # than silently showing an incomplete judgment indistinguishable
-            # from any other case.
-            judgment = await judge.judge_answer(query, answer_text, numbered_context, judge_temperature)
-            timings_ms["judge"] = round((time.monotonic() - step_start) * 1000, 1)
-            logger.info(
-                "judged answer (%.2fs): verdict=%s confidence=%d (%d/%d claims supported)",
-                time.monotonic() - step_start, judgment.verdict.value, judgment.confidence,
-                sum(c.supported for c in judgment.claims), len(judgment.claims),
-            )
-        except Exception as exc:
-            timings_ms["judge"] = round((time.monotonic() - step_start) * 1000, 1)
-            trace_error = f"{type(exc).__name__}: {exc}"
-            logger.exception("judge call failed (trace_id=%s) -- degrading to JUDGE_UNAVAILABLE", trace_id)
-            judgment = Judgment(
-                verdict=JudgeVerdict.JUDGE_UNAVAILABLE, confidence=0, claims=[],
-                notes=f"The judge model call failed: {trace_error}",
+        judgment: Judgment | None = None
+        if skip_judge:
+            logger.info("skip_judge=True -- not calling the judge for query %r (eval-harness path only)", query)
+        else:
+            judge_span = (
+                root_span.start_observation(name="judge", as_type="generation", model=judge.judge_model_name)
+                if root_span is not None
+                else None
             )
             if judge_span is not None:
-                judge_span.update(metadata={"error": trace_error})
+                judge_span.update(
+                    input={"question": query, "answer": answer_text},
+                    metadata={"provider": judge_provider, "temperature": judge_temperature},
+                )
+
+            step_start = time.monotonic()
+            try:
+                # A real, live-observed failure mode: the judge call is an
+                # external API boundary (a separate provider request from
+                # generation), and a transient provider outage here (e.g. a 503
+                # "high demand") shouldn't crash a request whose answer already
+                # generated successfully. Degrade to a JUDGE_UNAVAILABLE verdict
+                # instead -- both so the user still gets their answer, and so the
+                # trace honestly records that this specific call failed, rather
+                # than silently showing an incomplete judgment indistinguishable
+                # from any other case.
+                judgment = await judge.judge_answer(query, answer_text, numbered_context, judge_temperature)
+                timings_ms["judge"] = round((time.monotonic() - step_start) * 1000, 1)
+                logger.info(
+                    "judged answer (%.2fs): verdict=%s confidence=%d (%d/%d claims supported)",
+                    time.monotonic() - step_start, judgment.verdict.value, judgment.confidence,
+                    sum(c.supported for c in judgment.claims), len(judgment.claims),
+                )
+            except Exception as exc:
+                timings_ms["judge"] = round((time.monotonic() - step_start) * 1000, 1)
+                trace_error = f"{type(exc).__name__}: {exc}"
+                logger.exception("judge call failed (trace_id=%s) -- degrading to JUDGE_UNAVAILABLE", trace_id)
+                judgment = Judgment(
+                    verdict=JudgeVerdict.JUDGE_UNAVAILABLE, confidence=0, claims=[],
+                    notes=f"The judge model call failed: {trace_error}",
+                )
+                if judge_span is not None:
+                    judge_span.update(metadata={"error": trace_error})
+            if judge_span is not None:
+                judge_span.update(output=judgment.model_dump(mode="json"))
+                judge_span.end()
         trace_judgment = judgment
-        if judge_span is not None:
-            judge_span.update(output=judgment.model_dump(mode="json"))
-            judge_span.end()
 
         logger.info("chat query complete (%.2fs total): %r", time.monotonic() - started, query)
 
         if root_span is not None:
             root_span.update(output={
-                "verdict": judgment.verdict.value, "confidence": judgment.confidence, "citations": len(citations),
+                "verdict": judgment.verdict.value if judgment else "skipped",
+                "confidence": judgment.confidence if judgment else None,
+                "citations": len(citations),
             })
 
         yield ("final", ChatStreamFinal(

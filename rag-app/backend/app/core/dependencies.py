@@ -5,8 +5,10 @@ from langfuse import Langfuse
 
 from app.llm.base import LLMClient
 from app.registry.json_store import DocumentRegistry
+from app.registry.session_store import SessionStore
 from app.retrieval.qdrant_store import QdrantStore
 from app.trace.store import TraceStore
+from agents.conversation import ConversationState
 
 
 def get_registry(request: Request) -> DocumentRegistry:
@@ -23,6 +25,14 @@ def get_llm_clients(request: Request) -> dict[str, LLMClient]:
 
 def get_trace_store(request: Request) -> TraceStore:
     return request.app.state.trace_store
+
+
+def get_session_store(request: Request) -> SessionStore:
+    return request.app.state.session_store
+
+
+def get_agent_conversations(request: Request) -> dict[str, ConversationState]:
+    return request.app.state.agent_conversations
 
 
 def get_langfuse_client(request: Request) -> Langfuse | None:

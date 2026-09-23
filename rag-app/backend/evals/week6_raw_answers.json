@@ -1,0 +1,1009 @@
+[
+  {
+    "id": "w6-01",
+    "mode": "PLACEHOLDER-section-citation",
+    "checks": [
+      "section_reference_valid",
+      "handbook_version_cited"
+    ],
+    "question": "How many casual leave days do employees get under the 2024 policy?",
+    "answer": "Under the 2024 policy, employees get 15 days of casual leave [1, 2, 3].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Frequently Asked Questions",
+        "chunk_id": "b96af6e7-f97b-499f-b8f7-496af7636da4",
+        "snippet": "## Frequently Asked Questions  \nI was told casual leave is 12 days -- is that right? No, that was the 2023 entitlement. As of 2024-01-01 casual leave is 15 days.  \nCan I take casual leave and sick leave in the same week? Yes, they are tracked independently.  \nIs bereavement leave",
+        "rerank_score": 0.7236
+      },
+      {
+        "marker": 2,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Casual Leave",
+        "chunk_id": "7907a6a1-2161-47f5-86af-0cd447fbc6ec",
+        "snippet": "### Casual Leave  \nThe annual entitlement is 15 days (increased from 12 days in 2023). Casual leave must still be requested at least 3 business days in advance through the HR portal.",
+        "rerank_score": 0.7217
+      },
+      {
+        "marker": 3,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "What Changed from the 2023 Policy",
+        "chunk_id": "8268810b-614a-406a-b6e8-143774b4edda",
+        "snippet": "| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not ",
+        "rerank_score": 0.7106
+      }
+    ],
+    "numbered_context": "[1] (source: leave-policy-v2024.docx, page 1)\n## Frequently Asked Questions  \nI was told casual leave is 12 days -- is that right? No, that was the 2023 entitlement. As of 2024-01-01 casual leave is 15 days.  \nCan I take casual leave and sick leave in the same week? Yes, they are tracked independently.  \nIs bereavement leave paid? Yes, at full base salary.\n\n[2] (source: leave-policy-v2024.docx, page 1)\n### Casual Leave  \nThe annual entitlement is 15 days (increased from 12 days in 2023). Casual leave must still be requested at least 3 business days in advance through the HR portal.\n\n[3] (source: leave-policy-v2024.docx, page 1)\n| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not offered | 5 days |\n| Earned Leave Carry-Over Cap | 10 days | 12 days |",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-02",
+    "mode": "PLACEHOLDER-section-citation",
+    "checks": [
+      "section_reference_valid",
+      "handbook_version_cited"
+    ],
+    "question": "What is the sick leave entitlement under the current leave policy?",
+    "answer": "The annual sick leave entitlement is 12 days [1, 4].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Sick Leave",
+        "chunk_id": "9cbdb59b-f1b7-42e7-abd0-cb19816bebe8",
+        "snippet": "### Sick Leave  \nThe annual entitlement is 12 days (increased from 10 days in 2023). Sick leave may be reported on the day of absence; a doctor's note is required for absences longer than 2 consecutive days.",
+        "rerank_score": 0.7231
+      },
+      {
+        "marker": 4,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "What Changed from the 2023 Policy",
+        "chunk_id": "8268810b-614a-406a-b6e8-143774b4edda",
+        "snippet": "| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not ",
+        "rerank_score": 0.6151
+      }
+    ],
+    "numbered_context": "[1] (source: leave-policy-v2024.docx, page 1)\n### Sick Leave  \nThe annual entitlement is 12 days (increased from 10 days in 2023). Sick leave may be reported on the day of absence; a doctor's note is required for absences longer than 2 consecutive days.\n\n[4] (source: leave-policy-v2024.docx, page 1)\n| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not offered | 5 days |\n| Earned Leave Carry-Over Cap | 10 days | 12 days |",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-03",
+    "mode": "PLACEHOLDER-version-collision",
+    "checks": [
+      "section_reference_valid",
+      "handbook_version_cited"
+    ],
+    "question": "What was the casual leave entitlement under the 2023 policy specifically?",
+    "answer": "The casual leave entitlement under the 2023 policy was 12 days [1, 3, 4, 6].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Casual Leave",
+        "chunk_id": "7907a6a1-2161-47f5-86af-0cd447fbc6ec",
+        "snippet": "### Casual Leave  \nThe annual entitlement is 15 days (increased from 12 days in 2023). Casual leave must still be requested at least 3 business days in advance through the HR portal.",
+        "rerank_score": 0.7269
+      },
+      {
+        "marker": 3,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Frequently Asked Questions",
+        "chunk_id": "b96af6e7-f97b-499f-b8f7-496af7636da4",
+        "snippet": "## Frequently Asked Questions  \nI was told casual leave is 12 days -- is that right? No, that was the 2023 entitlement. As of 2024-01-01 casual leave is 15 days.  \nCan I take casual leave and sick leave in the same week? Yes, they are tracked independently.  \nIs bereavement leave",
+        "rerank_score": 0.6929
+      },
+      {
+        "marker": 4,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "What Changed from the 2023 Policy",
+        "chunk_id": "8268810b-614a-406a-b6e8-143774b4edda",
+        "snippet": "| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not ",
+        "rerank_score": 0.6508
+      },
+      {
+        "marker": 6,
+        "doc_id": "1f2e83f8-41a8-4160-97e8-ec74fa4e67ca",
+        "filename": "leave-policy-v2023.pdf",
+        "page_number": 1,
+        "section_heading": "**_3.1 Casual Leave_**",
+        "chunk_id": "bc49e335-1103-4373-a279-6ad5345bfcff",
+        "snippet": "### **_3.1 Casual Leave_**  \nCasual leave covers short, planned absences (personal errands, family events). The annual entitlement is **12 days** . Casual leave must be requested at least 3 business days in advance through the HR portal.",
+        "rerank_score": 0.6137
+      }
+    ],
+    "numbered_context": "[1] (source: leave-policy-v2024.docx, page 1)\n### Casual Leave  \nThe annual entitlement is 15 days (increased from 12 days in 2023). Casual leave must still be requested at least 3 business days in advance through the HR portal.\n\n[3] (source: leave-policy-v2024.docx, page 1)\n## Frequently Asked Questions  \nI was told casual leave is 12 days -- is that right? No, that was the 2023 entitlement. As of 2024-01-01 casual leave is 15 days.  \nCan I take casual leave and sick leave in the same week? Yes, they are tracked independently.  \nIs bereavement leave paid? Yes, at full base salary.\n\n[4] (source: leave-policy-v2024.docx, page 1)\n| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not offered | 5 days |\n| Earned Leave Carry-Over Cap | 10 days | 12 days |\n\n[6] (source: leave-policy-v2023.pdf, page 1)\n### **_3.1 Casual Leave_**  \nCasual leave covers short, planned absences (personal errands, family events). The annual entitlement is **12 days** . Casual leave must be requested at least 3 business days in advance through the HR portal.",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-04",
+    "mode": "PLACEHOLDER-version-collision",
+    "checks": [
+      "handbook_version_cited"
+    ],
+    "question": "What changed between the 2023 and 2024 leave policies?",
+    "answer": "Based on the provided context, the text does not list all the specific changes between the 2023 and 2024 leave policies, except to note that parental leave remains unchanged at 26 weeks for the primary caregiver and 2 weeks for the secondary caregiver [6].",
+    "citations": [
+      {
+        "marker": 6,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Parental Leave",
+        "chunk_id": "5bb4223c-d4bb-4be2-976a-7defaebb2fb7",
+        "snippet": "### Parental Leave  \nParental leave remains 26 weeks for the primary caregiver and 2 weeks for the secondary caregiver (unchanged from 2023).",
+        "rerank_score": 0.5973
+      }
+    ],
+    "numbered_context": "[6] (source: leave-policy-v2024.docx, page 1)\n### Parental Leave  \nParental leave remains 26 weeks for the primary caregiver and 2 weeks for the secondary caregiver (unchanged from 2023).",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-05",
+    "mode": "PLACEHOLDER-version-collision",
+    "checks": [
+      "section_reference_valid",
+      "handbook_version_cited"
+    ],
+    "question": "Is there a bereavement leave policy and how many days does it cover?",
+    "answer": "Yes, there is a bereavement leave policy [1, 5]. It covers 5 days of paid leave for the death of an immediate family member (spouse, parent, child, or sibling) and 2 days for an extended family member [1].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Bereavement Leave (New)",
+        "chunk_id": "86352c22-29b1-4db4-88de-b19ed4456e0f",
+        "snippet": "### Bereavement Leave (New)  \nEmployees are entitled to 5 days of paid bereavement leave for the death of an immediate family member (spouse, parent, child, or sibling), and 2 days for an extended family member. This category did not exist under the 2023 edition.",
+        "rerank_score": 0.724
+      },
+      {
+        "marker": 5,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Leave Entitlements",
+        "chunk_id": "2ce46a67-93ca-43fa-a8a1-4bc28a641665",
+        "snippet": "## Leave Entitlements  \nLeave is split across five categories. Casual, sick, and earned leave entitlements increased from the 2023 edition; a new Bereavement Leave category was also added.",
+        "rerank_score": 0.5138
+      }
+    ],
+    "numbered_context": "[1] (source: leave-policy-v2024.docx, page 1)\n### Bereavement Leave (New)  \nEmployees are entitled to 5 days of paid bereavement leave for the death of an immediate family member (spouse, parent, child, or sibling), and 2 days for an extended family member. This category did not exist under the 2023 edition.\n\n[5] (source: leave-policy-v2024.docx, page 1)\n## Leave Entitlements  \nLeave is split across five categories. Casual, sick, and earned leave entitlements increased from the 2023 edition; a new Bereavement Leave category was also added.",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-06",
+    "mode": "PLACEHOLDER-section-citation",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "How many days of earned leave carry over to the next year?",
+    "answer": "Up to a maximum of 12 days of earned leave carry over to the next calendar year [1]. In 2023, the maximum carry-over cap was 10 days [2, 4].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Carry-Over Rules",
+        "chunk_id": "29129ae7-1551-42ef-9cd2-0af856cc85e1",
+        "snippet": "## Carry-Over Rules  \nUnused earned leave carries over to the next calendar year, up to a maximum of 12 days (increased from 10 days in 2023). Casual, sick, and bereavement leave do not carry over and expire at the end of the calendar year.",
+        "rerank_score": 0.7307
+      },
+      {
+        "marker": 2,
+        "doc_id": "1f2e83f8-41a8-4160-97e8-ec74fa4e67ca",
+        "filename": "leave-policy-v2023.pdf",
+        "page_number": 2,
+        "section_heading": "**5. Carry-Over Rules**",
+        "chunk_id": "057992cb-2b87-4d6b-b4b4-caa668bb7327",
+        "snippet": "## **5. Carry-Over Rules**  \nUnused earned leave carries over to the next calendar year, up to a maximum of **10 days** . Casual leave and sick leave do not carry over and expire at the end of the calendar year.",
+        "rerank_score": 0.7304
+      },
+      {
+        "marker": 4,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "What Changed from the 2023 Policy",
+        "chunk_id": "8268810b-614a-406a-b6e8-143774b4edda",
+        "snippet": "| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not ",
+        "rerank_score": 0.6679
+      }
+    ],
+    "numbered_context": "[1] (source: leave-policy-v2024.docx, page 1)\n## Carry-Over Rules  \nUnused earned leave carries over to the next calendar year, up to a maximum of 12 days (increased from 10 days in 2023). Casual, sick, and bereavement leave do not carry over and expire at the end of the calendar year.\n\n[2] (source: leave-policy-v2023.pdf, page 2)\n## **5. Carry-Over Rules**  \nUnused earned leave carries over to the next calendar year, up to a maximum of **10 days** . Casual leave and sick leave do not carry over and expire at the end of the calendar year.\n\n[4] (source: leave-policy-v2024.docx, page 1)\n| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not offered | 5 days |\n| Earned Leave Carry-Over Cap | 10 days | 12 days |",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-07",
+    "mode": "PLACEHOLDER-section-citation",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "How many remote work days per week are employees allowed?",
+    "answer": "Eligible employees are allowed to work remotely up to 3 days per week [1].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "666316ea-7178-476b-88a2-5334382b483b",
+        "filename": "remote-work-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**3. Remote Work Days & Core Hours**",
+        "chunk_id": "c0491f89-7a41-4a4e-bc00-43a6df55aa8c",
+        "snippet": "## **3. Remote Work Days & Core Hours**  \nEligible employees may work remotely up to **3 days per week** . Remote work requests are submitted via the same HR portal used for leave requests, under \"Time Off > Remote Work Request.\" Employees working remotely must remain reachable d",
+        "rerank_score": 0.7301
+      }
+    ],
+    "numbered_context": "[1] (source: remote-work-policy.pdf, page 1)\n## **3. Remote Work Days & Core Hours**  \nEligible employees may work remotely up to **3 days per week** . Remote work requests are submitted via the same HR portal used for leave requests, under \"Time Off > Remote Work Request.\" Employees working remotely must remain reachable during core hours, **10:00 AM to 4:00 PM** in their local time zone.",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-08",
+    "mode": "PLACEHOLDER-section-citation",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "What are the core hours for remote workers?",
+    "answer": "The core hours for remote workers are 10:00 AM to 4:00 PM in their local time zone [1].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "666316ea-7178-476b-88a2-5334382b483b",
+        "filename": "remote-work-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**3. Remote Work Days & Core Hours**",
+        "chunk_id": "c0491f89-7a41-4a4e-bc00-43a6df55aa8c",
+        "snippet": "## **3. Remote Work Days & Core Hours**  \nEligible employees may work remotely up to **3 days per week** . Remote work requests are submitted via the same HR portal used for leave requests, under \"Time Off > Remote Work Request.\" Employees working remotely must remain reachable d",
+        "rerank_score": 0.7298
+      }
+    ],
+    "numbered_context": "[1] (source: remote-work-policy.pdf, page 1)\n## **3. Remote Work Days & Core Hours**  \nEligible employees may work remotely up to **3 days per week** . Remote work requests are submitted via the same HR portal used for leave requests, under \"Time Off > Remote Work Request.\" Employees working remotely must remain reachable during core hours, **10:00 AM to 4:00 PM** in their local time zone.",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-09",
+    "mode": "PLACEHOLDER-numeric-precision",
+    "checks": [
+      "notice_period_numeric",
+      "section_reference_valid"
+    ],
+    "question": "What is the notice period for resignation in India?",
+    "answer": "The notice period for resignation in India is 60 days [1, 2].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "d2466cc0-a416-4c9e-978b-66a5486395bc",
+        "filename": "notice-period-and-termination-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**2. Notice Period by Jurisdiction**",
+        "chunk_id": "f87456ca-cdc1-4364-ad84-4028a0342159",
+        "snippet": "|Jurisdiction|Notice Period (Emplo<br>Resignation)|yee<br>Notice Period<br>(Company-Initiated)|\n|---|---|---|\n|India|60 days|60 days|\n|United States|14 days|0 days (at-will, subject to local<br>exceptions)|\n|United Kingdom|30 days|30 days, or longer if specified in<br>the contrac",
+        "rerank_score": 0.7282
+      },
+      {
+        "marker": 2,
+        "doc_id": "1d6a8edd-5f70-4ff4-9e1c-a3762552f118",
+        "filename": "notice-period-and-termination-policy.md",
+        "page_number": 1,
+        "section_heading": "2. Notice Period by Jurisdiction",
+        "chunk_id": "c9618bab-e8de-4d1e-a032-8ffbd9660d84",
+        "snippet": "| Jurisdiction | Notice Period (Employee Resignation) | Notice Period (Company-Initiated) |\n|---|---|---|\n| India | 60 days | 60 days |\n| United States | 14 days | 0 days (at-will, subject to local exceptions) |\n| United Kingdom | 30 days | 30 days, or longer if specified in the ",
+        "rerank_score": 0.7278
+      }
+    ],
+    "numbered_context": "[1] (source: notice-period-and-termination-policy.pdf, page 1)\n|Jurisdiction|Notice Period (Emplo<br>Resignation)|yee<br>Notice Period<br>(Company-Initiated)|\n|---|---|---|\n|India|60 days|60 days|\n|United States|14 days|0 days (at-will, subject to local<br>exceptions)|\n|United Kingdom|30 days|30 days, or longer if specified in<br>the contract|\n\n[2] (source: notice-period-and-termination-policy.md, page 1)\n| Jurisdiction | Notice Period (Employee Resignation) | Notice Period (Company-Initiated) |\n|---|---|---|\n| India | 60 days | 60 days |\n| United States | 14 days | 0 days (at-will, subject to local exceptions) |\n| United Kingdom | 30 days | 30 days, or longer if specified in the contract |",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-10",
+    "mode": "PLACEHOLDER-numeric-precision",
+    "checks": [
+      "notice_period_numeric",
+      "section_reference_valid"
+    ],
+    "question": "What is the notice period for resignation in the United States?",
+    "answer": "The notice period for employee resignation in the United States is 14 days [1, 2].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "1d6a8edd-5f70-4ff4-9e1c-a3762552f118",
+        "filename": "notice-period-and-termination-policy.md",
+        "page_number": 1,
+        "section_heading": "2. Notice Period by Jurisdiction",
+        "chunk_id": "c9618bab-e8de-4d1e-a032-8ffbd9660d84",
+        "snippet": "| Jurisdiction | Notice Period (Employee Resignation) | Notice Period (Company-Initiated) |\n|---|---|---|\n| India | 60 days | 60 days |\n| United States | 14 days | 0 days (at-will, subject to local exceptions) |\n| United Kingdom | 30 days | 30 days, or longer if specified in the ",
+        "rerank_score": 0.7268
+      },
+      {
+        "marker": 2,
+        "doc_id": "d2466cc0-a416-4c9e-978b-66a5486395bc",
+        "filename": "notice-period-and-termination-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**2. Notice Period by Jurisdiction**",
+        "chunk_id": "f87456ca-cdc1-4364-ad84-4028a0342159",
+        "snippet": "|Jurisdiction|Notice Period (Emplo<br>Resignation)|yee<br>Notice Period<br>(Company-Initiated)|\n|---|---|---|\n|India|60 days|60 days|\n|United States|14 days|0 days (at-will, subject to local<br>exceptions)|\n|United Kingdom|30 days|30 days, or longer if specified in<br>the contrac",
+        "rerank_score": 0.7266
+      }
+    ],
+    "numbered_context": "[1] (source: notice-period-and-termination-policy.md, page 1)\n| Jurisdiction | Notice Period (Employee Resignation) | Notice Period (Company-Initiated) |\n|---|---|---|\n| India | 60 days | 60 days |\n| United States | 14 days | 0 days (at-will, subject to local exceptions) |\n| United Kingdom | 30 days | 30 days, or longer if specified in the contract |\n\n[2] (source: notice-period-and-termination-policy.pdf, page 1)\n|Jurisdiction|Notice Period (Emplo<br>Resignation)|yee<br>Notice Period<br>(Company-Initiated)|\n|---|---|---|\n|India|60 days|60 days|\n|United States|14 days|0 days (at-will, subject to local<br>exceptions)|\n|United Kingdom|30 days|30 days, or longer if specified in<br>the contract|",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-11",
+    "mode": "PLACEHOLDER-numeric-precision",
+    "checks": [
+      "notice_period_numeric",
+      "section_reference_valid"
+    ],
+    "question": "What is the notice period for resignation in the United Kingdom?",
+    "answer": "The notice period for resignation in the United Kingdom is 30 days [1, 2].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "d2466cc0-a416-4c9e-978b-66a5486395bc",
+        "filename": "notice-period-and-termination-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**2. Notice Period by Jurisdiction**",
+        "chunk_id": "f87456ca-cdc1-4364-ad84-4028a0342159",
+        "snippet": "|Jurisdiction|Notice Period (Emplo<br>Resignation)|yee<br>Notice Period<br>(Company-Initiated)|\n|---|---|---|\n|India|60 days|60 days|\n|United States|14 days|0 days (at-will, subject to local<br>exceptions)|\n|United Kingdom|30 days|30 days, or longer if specified in<br>the contrac",
+        "rerank_score": 0.725
+      },
+      {
+        "marker": 2,
+        "doc_id": "1d6a8edd-5f70-4ff4-9e1c-a3762552f118",
+        "filename": "notice-period-and-termination-policy.md",
+        "page_number": 1,
+        "section_heading": "2. Notice Period by Jurisdiction",
+        "chunk_id": "c9618bab-e8de-4d1e-a032-8ffbd9660d84",
+        "snippet": "| Jurisdiction | Notice Period (Employee Resignation) | Notice Period (Company-Initiated) |\n|---|---|---|\n| India | 60 days | 60 days |\n| United States | 14 days | 0 days (at-will, subject to local exceptions) |\n| United Kingdom | 30 days | 30 days, or longer if specified in the ",
+        "rerank_score": 0.723
+      }
+    ],
+    "numbered_context": "[1] (source: notice-period-and-termination-policy.pdf, page 1)\n|Jurisdiction|Notice Period (Emplo<br>Resignation)|yee<br>Notice Period<br>(Company-Initiated)|\n|---|---|---|\n|India|60 days|60 days|\n|United States|14 days|0 days (at-will, subject to local<br>exceptions)|\n|United Kingdom|30 days|30 days, or longer if specified in<br>the contract|\n\n[2] (source: notice-period-and-termination-policy.md, page 1)\n| Jurisdiction | Notice Period (Employee Resignation) | Notice Period (Company-Initiated) |\n|---|---|---|\n| India | 60 days | 60 days |\n| United States | 14 days | 0 days (at-will, subject to local exceptions) |\n| United Kingdom | 30 days | 30 days, or longer if specified in the contract |",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-12",
+    "mode": "PLACEHOLDER-out-of-jurisdiction",
+    "checks": [
+      "out_of_jurisdiction_refused"
+    ],
+    "question": "What is the notice period for resignation in Germany?",
+    "answer": "The provided context does not contain information about the notice period for resignation in Germany.",
+    "citations": [],
+    "numbered_context": "",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": {
+      "verdict": "out_of_scope",
+      "confidence": 0,
+      "claims": [],
+      "notes": "The generator found no retrieved chunk it could cite an answer from."
+    }
+  },
+  {
+    "id": "w6-13",
+    "mode": "PLACEHOLDER-out-of-jurisdiction",
+    "checks": [
+      "out_of_jurisdiction_refused"
+    ],
+    "question": "What is the notice period for resignation in France?",
+    "answer": "The provided context does not contain the answer regarding the notice period for resignation in France.",
+    "citations": [],
+    "numbered_context": "",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": {
+      "verdict": "out_of_scope",
+      "confidence": 0,
+      "claims": [],
+      "notes": "The generator found no retrieved chunk it could cite an answer from."
+    }
+  },
+  {
+    "id": "w6-14",
+    "mode": "PLACEHOLDER-out-of-jurisdiction",
+    "checks": [
+      "out_of_jurisdiction_refused"
+    ],
+    "question": "What is the notice period for resignation in Australia?",
+    "answer": "The provided context does not contain information about the notice period for resignation in Australia.",
+    "citations": [],
+    "numbered_context": "",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": {
+      "verdict": "out_of_scope",
+      "confidence": 0,
+      "claims": [],
+      "notes": "The generator found no retrieved chunk it could cite an answer from."
+    }
+  },
+  {
+    "id": "w6-15",
+    "mode": "PLACEHOLDER-off-topic-refusal",
+    "checks": [
+      "out_of_jurisdiction_refused"
+    ],
+    "question": "What is the capital of Australia?",
+    "answer": "The context does not contain the answer.",
+    "citations": [],
+    "numbered_context": "",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": {
+      "verdict": "out_of_scope",
+      "confidence": 0,
+      "claims": [],
+      "notes": "The generator found no retrieved chunk it could cite an answer from."
+    }
+  },
+  {
+    "id": "w6-16",
+    "mode": "PLACEHOLDER-off-topic-refusal",
+    "checks": [
+      "out_of_jurisdiction_refused"
+    ],
+    "question": "Tell me about the plot of the movie Inception.",
+    "answer": "The provided context does not contain information about the plot of the movie Inception.",
+    "citations": [],
+    "numbered_context": "",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": {
+      "verdict": "out_of_scope",
+      "confidence": 0,
+      "claims": [],
+      "notes": "The generator found no retrieved chunk it could cite an answer from."
+    }
+  },
+  {
+    "id": "w6-17",
+    "mode": "PLACEHOLDER-general-grounded",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "What's the approval threshold for expenses above $500?",
+    "answer": "The approval thresholds for expenses above $500 are as follows:\n- For amounts from $500.01 to $2,000, direct manager and department head approval is required [1].\n- For amounts above $2,000, department head and Finance approval is required [1].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "07ba2b67-4c81-4a0a-b7ac-f301ef87e8cd",
+        "filename": "expense-reimbursement-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**4. Approval Thresholds**",
+        "chunk_id": "57c451d3-fd0f-4355-8d0b-0ad2e072e5f5",
+        "snippet": "|Claim Amount|Approval Required|\n|---|---|\n|Up to $200|Auto-approved, manager notified|\n|$200.01 - $500|Direct manager approval|\n|$500.01 - $2,000|Direct manager + department head approval|\n|Above $2,000|Department head + Finance approval|",
+        "rerank_score": 0.6275
+      }
+    ],
+    "numbered_context": "[1] (source: expense-reimbursement-policy.pdf, page 1)\n|Claim Amount|Approval Required|\n|---|---|\n|Up to $200|Auto-approved, manager notified|\n|$200.01 - $500|Direct manager approval|\n|$500.01 - $2,000|Direct manager + department head approval|\n|Above $2,000|Department head + Finance approval|",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-18",
+    "mode": "PLACEHOLDER-general-grounded",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "Can I expense alcohol at a client dinner?",
+    "answer": "No, alcohol is excluded from reimbursable client entertainment expenses and is not eligible [1, 2].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "07ba2b67-4c81-4a0a-b7ac-f301ef87e8cd",
+        "filename": "expense-reimbursement-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**6. Frequently Asked Questions**",
+        "chunk_id": "1470867c-99f6-449e-937c-b8c84d8fee5e",
+        "snippet": "## **6. Frequently Asked Questions**  \n- **Can I expense a client dinner including alcohol?** No, alcohol is excluded from reimbursable client  \n- entertainment expenses.  \n- **What if I lose a receipt?** A signed statement explaining the expense may be submitted instead for  \n- ",
+        "rerank_score": 0.73
+      },
+      {
+        "marker": 2,
+        "doc_id": "07ba2b67-4c81-4a0a-b7ac-f301ef87e8cd",
+        "filename": "expense-reimbursement-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**2. Eligible Expenses**",
+        "chunk_id": "7aafe5a7-73b8-46a5-9c5d-70e0d7a5dd6d",
+        "snippet": "## **2. Eligible Expenses**  \nEligible categories are: travel (flights, trains, mileage), lodging, client meals and entertainment, professional development (courses, conference tickets), and the one-time home office stipend described in the Remote Work Policy. Personal expenses, ",
+        "rerank_score": 0.6914
+      }
+    ],
+    "numbered_context": "[1] (source: expense-reimbursement-policy.pdf, page 1)\n## **6. Frequently Asked Questions**  \n- **Can I expense a client dinner including alcohol?** No, alcohol is excluded from reimbursable client  \n- entertainment expenses.  \n- **What if I lose a receipt?** A signed statement explaining the expense may be submitted instead for  \n- claims under $50; above that, Finance may reject the claim.\n\n[2] (source: expense-reimbursement-policy.pdf, page 1)\n## **2. Eligible Expenses**  \nEligible categories are: travel (flights, trains, mileage), lodging, client meals and entertainment, professional development (courses, conference tickets), and the one-time home office stipend described in the Remote Work Policy. Personal expenses, commuting costs, and alcohol at client meals are not eligible.",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-19",
+    "mode": "PLACEHOLDER-general-grounded",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "What value of gift needs to be disclosed under the code of conduct?",
+    "answer": "Anything of value over $100 needs disclosure [1]. Additionally, gifts from vendors valued over $100 require disclosure to the Ethics desk [2].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "eda9270c-552d-451a-9a75-f5557dd163b0",
+        "filename": "code-of-conduct-policy.docx",
+        "page_number": 1,
+        "section_heading": "Frequently Asked Questions",
+        "chunk_id": "8871ad91-1f25-4c6f-a599-94c0ee7e88a2",
+        "snippet": "## Frequently Asked Questions  \nCan I report anonymously? Yes, via the Ethics Hotline.  \nWill I face retaliation for reporting? No; retaliation against a good-faith reporter is itself a violation of this policy and is subject to disciplinary action.  \nWhat counts as a \"gift\" that",
+        "rerank_score": 0.6794
+      },
+      {
+        "marker": 2,
+        "doc_id": "eda9270c-552d-451a-9a75-f5557dd163b0",
+        "filename": "code-of-conduct-policy.docx",
+        "page_number": 1,
+        "section_heading": "Prohibited Conduct",
+        "chunk_id": "481087c2-032e-46dc-97e7-201447dfb843",
+        "snippet": "## Prohibited Conduct  \nProhibited conduct includes: harassment or discrimination of any kind, falsifying expense reports or timesheets, sharing confidential company or customer data outside authorized channels, and accepting gifts from vendors valued over $100 without disclosure",
+        "rerank_score": 0.6024
+      }
+    ],
+    "numbered_context": "[1] (source: code-of-conduct-policy.docx, page 1)\n## Frequently Asked Questions  \nCan I report anonymously? Yes, via the Ethics Hotline.  \nWill I face retaliation for reporting? No; retaliation against a good-faith reporter is itself a violation of this policy and is subject to disciplinary action.  \nWhat counts as a \"gift\" that needs disclosure? Anything of value over $100, including meals, event tickets, and physical items.\n\n[2] (source: code-of-conduct-policy.docx, page 1)\n## Prohibited Conduct  \nProhibited conduct includes: harassment or discrimination of any kind, falsifying expense reports or timesheets, sharing confidential company or customer data outside authorized channels, and accepting gifts from vendors valued over $100 without disclosure to the Ethics desk.",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-20",
+    "mode": "PLACEHOLDER-general-grounded",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "How do I report a code of conduct violation confidentially?",
+    "answer": "Violations may be reported confidentially through the Ethics Hotline, which is accessible from the HR portal footer [1].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "eda9270c-552d-451a-9a75-f5557dd163b0",
+        "filename": "code-of-conduct-policy.docx",
+        "page_number": 1,
+        "section_heading": "Reporting a Violation",
+        "chunk_id": "3b88db11-12b7-46a2-9bea-2bb93c51d7b2",
+        "snippet": "## Reporting a Violation  \nViolations may be reported through the confidential Ethics Hotline (accessible from the HR portal footer) or directly to an HR business partner. Reports may be filed anonymously.",
+        "rerank_score": 0.6827
+      }
+    ],
+    "numbered_context": "[1] (source: code-of-conduct-policy.docx, page 1)\n## Reporting a Violation  \nViolations may be reported through the confidential Ethics Hotline (accessible from the HR portal footer) or directly to an HR business partner. Reports may be filed anonymously.",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-21",
+    "mode": "PLACEHOLDER-general-grounded",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "What is the monthly premium for employee-only health insurance?",
+    "answer": "The monthly premium for employee-only health insurance is $450 [1].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "0df9ce05-8589-4549-be40-8e466b8b178f",
+        "filename": "benefits-and-insurance-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**2. Health Insurance Coverage**",
+        "chunk_id": "8816ebc2-8b53-40b1-8d16-ff458a222020",
+        "snippet": "|Plan Tier|Monthly Premiu<br>(Company-Paid|m<br><br>Employee Contribu|tion<br>Coverage|\n|---|---|---|---|\n|Employee Only|$450|$0|Individual medical,<br>dental, vision|\n|Employee + Spouse|$780|$120/month|Above + spouse|\n|Employee + Family|$1,050|$210/month|Above + dependent<br>chi",
+        "rerank_score": 0.7127
+      }
+    ],
+    "numbered_context": "[1] (source: benefits-and-insurance-policy.pdf, page 1)\n|Plan Tier|Monthly Premiu<br>(Company-Paid|m<br><br>Employee Contribu|tion<br>Coverage|\n|---|---|---|---|\n|Employee Only|$450|$0|Individual medical,<br>dental, vision|\n|Employee + Spouse|$780|$120/month|Above + spouse|\n|Employee + Family|$1,050|$210/month|Above + dependent<br>children|",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-22",
+    "mode": "PLACEHOLDER-general-grounded",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "How often are performance reviews conducted?",
+    "answer": "Formal performance reviews run twice a year: a mid-year check-in in June and an annual review in December [1].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "cc3e11a7-d6be-401a-a592-563f4356aef3",
+        "filename": "performance-review-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**2. Review Cycle & Timeline**",
+        "chunk_id": "fabc2ad5-f981-4052-a2b5-fe317e7d8903",
+        "snippet": "## **2. Review Cycle & Timeline**  \nFormal performance reviews run twice a year: a mid-year check-in (June) and an annual review (December), each preceded by a 2-week self-assessment window. Employees who joined less than 90 days before a review date are excluded from that cycle ",
+        "rerank_score": 0.7197
+      }
+    ],
+    "numbered_context": "[1] (source: performance-review-policy.pdf, page 1)\n## **2. Review Cycle & Timeline**  \nFormal performance reviews run twice a year: a mid-year check-in (June) and an annual review (December), each preceded by a 2-week self-assessment window. Employees who joined less than 90 days before a review date are excluded from that cycle and reviewed at the next one instead.",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-23",
+    "mode": "PLACEHOLDER-general-grounded",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "Does extended leave affect my performance review timing?",
+    "answer": "Yes, extended leave affects performance review timing; an employee on leave covering more than half of a review period is moved to the next cycle [1]. Extended leave also shifts an employee to the next review cycle [4].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "cc3e11a7-d6be-401a-a592-563f4356aef3",
+        "filename": "performance-review-policy.pdf",
+        "page_number": 1,
+        "section_heading": "**6. Frequently Asked Questions**",
+        "chunk_id": "55b44953-513b-4487-bf9c-eddfab31df14",
+        "snippet": "## **6. Frequently Asked Questions**  \n\u2022 **Does extended leave affect my review timing?** Yes -- see the Employee Leave Policy; an employee on leave covering more than half of a review period is moved to the next cycle.  \n- **Can a rating be appealed?** Yes, within 10 business da",
+        "rerank_score": 0.7307
+      },
+      {
+        "marker": 4,
+        "doc_id": "cc3e11a7-d6be-401a-a592-563f4356aef3",
+        "filename": "performance-review-policy.pdf",
+        "page_number": 2,
+        "section_heading": "**Cross-Article References**",
+        "chunk_id": "38f032d7-1ba2-4efc-8518-da058896da21",
+        "snippet": "## **Cross-Article References**  \n- See **Employee Leave Policy (2024 Edition)** for how extended leave shifts an employee to the next review cycle.  \n- See **Code of Conduct Policy** for how a disciplinary action affects a review cycle.",
+        "rerank_score": 0.6604
+      }
+    ],
+    "numbered_context": "[1] (source: performance-review-policy.pdf, page 1)\n## **6. Frequently Asked Questions**  \n\u2022 **Does extended leave affect my review timing?** Yes -- see the Employee Leave Policy; an employee on leave covering more than half of a review period is moved to the next cycle.  \n- **Can a rating be appealed?** Yes, within 10 business days of the rating being shared, via the  \n- Performance tab.\n\n[4] (source: performance-review-policy.pdf, page 2)\n## **Cross-Article References**  \n- See **Employee Leave Policy (2024 Edition)** for how extended leave shifts an employee to the next review cycle.  \n- See **Code of Conduct Policy** for how a disciplinary action affects a review cycle.",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-regression-1",
+    "mode": "REGRESSION-wrongly-refused",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "How many casual leave days do I get?",
+    "answer": "You get 15 days of casual leave annually as of 2024 (increased from 12 days in 2023) [1, 2, 4].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Casual Leave",
+        "chunk_id": "7907a6a1-2161-47f5-86af-0cd447fbc6ec",
+        "snippet": "### Casual Leave  \nThe annual entitlement is 15 days (increased from 12 days in 2023). Casual leave must still be requested at least 3 business days in advance through the HR portal.",
+        "rerank_score": 0.728
+      },
+      {
+        "marker": 2,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Frequently Asked Questions",
+        "chunk_id": "b96af6e7-f97b-499f-b8f7-496af7636da4",
+        "snippet": "## Frequently Asked Questions  \nI was told casual leave is 12 days -- is that right? No, that was the 2023 entitlement. As of 2024-01-01 casual leave is 15 days.  \nCan I take casual leave and sick leave in the same week? Yes, they are tracked independently.  \nIs bereavement leave",
+        "rerank_score": 0.7272
+      },
+      {
+        "marker": 4,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "What Changed from the 2023 Policy",
+        "chunk_id": "8268810b-614a-406a-b6e8-143774b4edda",
+        "snippet": "| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not ",
+        "rerank_score": 0.7019
+      }
+    ],
+    "numbered_context": "[1] (source: leave-policy-v2024.docx, page 1)\n### Casual Leave  \nThe annual entitlement is 15 days (increased from 12 days in 2023). Casual leave must still be requested at least 3 business days in advance through the HR portal.\n\n[2] (source: leave-policy-v2024.docx, page 1)\n## Frequently Asked Questions  \nI was told casual leave is 12 days -- is that right? No, that was the 2023 entitlement. As of 2024-01-01 casual leave is 15 days.  \nCan I take casual leave and sick leave in the same week? Yes, they are tracked independently.  \nIs bereavement leave paid? Yes, at full base salary.\n\n[4] (source: leave-policy-v2024.docx, page 1)\n| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not offered | 5 days |\n| Earned Leave Carry-Over Cap | 10 days | 12 days |",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  },
+  {
+    "id": "w6-regression-2",
+    "mode": "REGRESSION-grounded-zero-confidence",
+    "checks": [
+      "section_reference_valid"
+    ],
+    "question": "How many days of earned leave carry over to the next year?",
+    "answer": "Up to 12 days of unused earned leave carry over to the next calendar year [1, 4].",
+    "citations": [
+      {
+        "marker": 1,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "Carry-Over Rules",
+        "chunk_id": "29129ae7-1551-42ef-9cd2-0af856cc85e1",
+        "snippet": "## Carry-Over Rules  \nUnused earned leave carries over to the next calendar year, up to a maximum of 12 days (increased from 10 days in 2023). Casual, sick, and bereavement leave do not carry over and expire at the end of the calendar year.",
+        "rerank_score": 0.7307
+      },
+      {
+        "marker": 4,
+        "doc_id": "aa55f911-312a-42fb-a8e9-a39ae6f752e3",
+        "filename": "leave-policy-v2024.docx",
+        "page_number": 1,
+        "section_heading": "What Changed from the 2023 Policy",
+        "chunk_id": "8268810b-614a-406a-b6e8-143774b4edda",
+        "snippet": "| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not ",
+        "rerank_score": 0.6679
+      }
+    ],
+    "numbered_context": "[1] (source: leave-policy-v2024.docx, page 1)\n## Carry-Over Rules  \nUnused earned leave carries over to the next calendar year, up to a maximum of 12 days (increased from 10 days in 2023). Casual, sick, and bereavement leave do not carry over and expire at the end of the calendar year.\n\n[4] (source: leave-policy-v2024.docx, page 1)\n| Leave Type | 2023 Entitlement | 2024 Entitlement |\n| --- | --- | --- |\n| Casual Leave | 12 days | 15 days |\n| Sick Leave | 10 days | 12 days |\n| Earned Leave | 18 days | 21 days |\n| Parental Leave | 26 weeks (primary) | 26 weeks (primary), unchanged |\n| Bereavement Leave | Not offered | 5 days |\n| Earned Leave Carry-Over Cap | 10 days | 12 days |",
+    "retrieval_debug": {
+      "mode": "hybrid",
+      "candidates_after_fusion": 40,
+      "reranked_returned": 6,
+      "query_variants": null,
+      "generator_provider": "gemini",
+      "judge_provider": "gemini",
+      "generator_temperature": 0.2,
+      "judge_temperature": 0.0,
+      "use_mmr": false
+    },
+    "judgment": null
+  }
+]

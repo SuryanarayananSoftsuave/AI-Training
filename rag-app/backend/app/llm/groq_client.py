@@ -112,8 +112,13 @@ class GroqClient:
             if delta:
                 yield delta
 
-    async def judge_answer(self, question: str, answer: str, numbered_context: str, temperature: float) -> Judgment:
-        data = await self._call(self._judge_model, render_judge(question, answer, numbered_context), _JUDGE_OUTPUT_SCHEMA, temperature)
+    async def judge_answer(
+        self, question: str, answer: str, numbered_context: str, temperature: float, prompt_version: str | None = None
+    ) -> Judgment:
+        data = await self._call(
+            self._judge_model, render_judge(question, answer, numbered_context, version=prompt_version),
+            _JUDGE_OUTPUT_SCHEMA, temperature,
+        )
 
         raw_claims = [(c["claim"], c["supported"], c["evidence_quote"]) for c in data.get("claims", [])]
         verified_claims, confidence = verify_and_score_claims(raw_claims, numbered_context, fallback_confidence=data.get("confidence", 0))

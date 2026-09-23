@@ -1,7 +1,8 @@
-# RAG App — Customer Support Knowledge Base
+# RAG App — HR Policy Knowledge Base
 
-A retrieval-augmented generation app: upload PDF documents, ask questions about them, get
-grounded answers with citations and an LLM-judge confidence score.
+A retrieval-augmented generation app: upload documents (PDF, Word, PowerPoint, Markdown, plain
+text, Excel, CSV, RTF, HTML), ask questions about them, get grounded answers with citations and an
+LLM-judge confidence score.
 
 **Stack**
 | Component | Tech | Port |
@@ -112,7 +113,8 @@ env var if needed: `$env:BACKEND_URL = "http://localhost:8000"` before launching
 
 ### 3.4 Try it
 
-1. Upload a PDF (e.g. one from `sample_data/customer_support_kb/`).
+1. Upload a document (PDF, Word, PowerPoint, Markdown, plain text, Excel, CSV, RTF, or HTML — e.g.
+   one from `sample_data/hr_policy_kb/`).
 2. Wait for its status to become `indexed`.
 3. Ask a question about its contents in the chat box.
 
@@ -123,11 +125,11 @@ env var if needed: `$env:BACKEND_URL = "http://localhost:8000"` before launching
 | Variable | Default | Meaning |
 |---|---|---|
 | `GEMINI_API_KEY` | *(empty)* | Required to use the Gemini generator/judge. |
-| `GEMINI_GENERATOR_MODEL` | `gemini-3.6-flash` | Model used to generate answers. |
-| `GEMINI_JUDGE_MODEL` | `gemini-3.5-flash` | Model used to grade groundedness of answers. |
+| `GEMINI_GENERATOR_MODEL` | `gemini-3.5-flash-lite` | Model used to generate answers. |
+| `GEMINI_JUDGE_MODEL` | `gemini-3.1-flash-lite` | Model used to grade groundedness of answers. |
 | `GROQ_API_KEY` | *(empty)* | Only needed if you select Groq as generator/judge in the UI. |
-| `GROQ_GENERATOR_MODEL` | `llama-3.1-70b-versatile` | Groq generator model. |
-| `GROQ_JUDGE_MODEL` | `llama-3.1-8b-instant` | Groq judge model. |
+| `GROQ_GENERATOR_MODEL` | `qwen/qwen3.8-27b` | Groq generator model. |
+| `GROQ_JUDGE_MODEL` | `openai/gpt-oss-20b` | Groq judge model. |
 | `QDRANT_URL` | `http://localhost:6333` | Where the backend reaches Qdrant. |
 | `QDRANT_COLLECTION` | `rag_documents` | Collection name for vectors. |
 | `EMBEDDING_MODEL_NAME` | `Qwen/Qwen3-Embedding-0.6B` | Dense embedding model (downloaded on first run). |
@@ -140,14 +142,51 @@ env var if needed: `$env:BACKEND_URL = "http://localhost:8000"` before launching
 | `QUERY_EXPANSION_VARIANT_COUNT` | `3` | Alternate phrasings generated when multi-query expansion is enabled. |
 | `QUERY_EXPANSION_SIMILARITY_THRESHOLD` | `0.80` | Minimum cosine similarity for a generated variant to be kept. |
 | `OFF_TOPIC_SCORE_THRESHOLD` | `0.15` | Below this best-rerank-score, a question is treated as out-of-scope. |
+| `MMR_LAMBDA` | `0.5` | MMR relevance/diversity balance when the "Enable MMR" toggle is on (1.0 = relevance-only, 0.0 = diversity-only). |
+| `MMR_POOL_SIZE` | `15` | How many reranked candidates MMR selects from when enabled (must be ≥ `top_k`). |
 | `DATA_DIR` / `UPLOADS_DIR` / `REGISTRY_PATH` | `data`, `data/uploads`, `data/registry/documents.json` | Local storage paths (relative to `backend/`). |
+| `TRACE_SUCCESS_LOG_PATH` / `TRACE_FAILURE_LOG_PATH` | `data/traces/successful_traces.jsonl`, `data/traces/failed_traces.jsonl` | Chat traces (see §7), split by outcome (`error is None` vs set) instead of one mixed file. |
+| `SUCCESS_LOG_PATH` / `FAILURE_LOG_PATH` | `data/logs/success.log`, `data/logs/failure.log` | Process-level log output, split the same way by log level (below/at-or-above `WARNING`). Console output is unaffected — these are additional file handlers. |
+| `LANGFUSE_ENABLED` | `false` | Turns on Langfuse tracing for `/chat` (see §5). The app runs identically with this off — no Langfuse dependency at all. |
+| `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` | *(placeholder)* | Must match the `LANGFUSE_INIT_PROJECT_PUBLIC_KEY` / `..._SECRET_KEY` baked into `docker-compose.yml`, which auto-provisions a project with exactly these keys on first boot. |
+| `LANGFUSE_HOST` | `http://localhost:3001` | Where the backend reaches a self-hosted Langfuse instance. |
 
 `backend/.env` is **git-ignored** — it holds live API keys and must never be committed.
 Only `backend/.env.example` (no real secrets) is tracked in git.
 
 ---
 
-## 5. Troubleshooting
+## 5. Observability
+
+**Local traces (always on).** Every `/chat` call is recorded as a `ChatTrace` — question,
+retrieval mode, ranked candidates, answer, judgment, timings — split into
+`data/traces/successful_traces.jsonl` (no pipeline error) and `data/traces/failed_traces.jsonl`
+(something in the pipeline raised). No setup needed; this is how Week 5/6 trace tooling
+(`backend/scripts/sample_traces.py`, `replay_trace.py`, `extract_regression_candidates.py`) reads
+its data.
+
+**Process logs.** Console output is unchanged; `data/logs/success.log` (INFO-level pipeline
+progress) and `data/logs/failure.log` (WARNING and above) split the same backend log stream by
+severity, so "what's actually broken" is a plain file read instead of grepping one interleaved log.
+
+**Langfuse (optional, self-hosted, free).** `docker-compose.yml` includes a full self-hosted
+Langfuse stack (web, worker, Postgres, ClickHouse, Redis, MinIO — Langfuse's own official compose
+service definitions) alongside Qdrant. Bring it up the same way:
+
+```powershell
+docker compose up -d
+```
+
+Then set `LANGFUSE_ENABLED=true` in `backend/.env` (the public/secret key defaults already match
+what's auto-provisioned in `docker-compose.yml`) and restart the backend. Open
+**http://localhost:3001** to watch every `/chat` request as a trace with nested spans — retrieve,
+rerank, generate, judge — including latency and the exact input/output at each stage. This is
+additive to the local `ChatTrace` recording above, not a replacement for it (Week 5/6 tooling
+depends on the local trace format specifically).
+
+---
+
+## 6. Troubleshooting
 
 - **"Docker is installed but the engine isn't running"** — open Docker Desktop and wait for it to fully start, then re-run `setup.bat`/`docker compose up -d`.
 - **`pip install` fails partway through installing torch** — a known transient issue on Windows; re-run `setup.bat` (the script auto-retries once with `--no-cache-dir`), or manually: `.\.venv\Scripts\pip install --no-cache-dir -r requirements.txt`.
@@ -160,19 +199,19 @@ Only `backend/.env.example` (no real secrets) is tracked in git.
 
 ---
 
-## 6. Stopping everything
+## 7. Stopping everything
 
 ```powershell
 # Stop backend / frontend: close their PowerShell windows, or Ctrl+C in each.
 
-# Stop Qdrant:
+# Stop Qdrant + Langfuse (if running):
 cd rag-app
-docker compose down       # keeps data in .\qdrant_storage
+docker compose down       # keeps data in .\qdrant_storage and the langfuse_* named volumes
 ```
 
 ---
 
-## 7. Project layout
+## 8. Project layout
 
 ```
 rag-app/

@@ -1,0 +1,12 @@
+id,question,system_used,reason,passed,tokens,latency_s,cost_usd,fallback_used
+q1,What is the notice period for employee E1 if they resign?,workflow,"1 employee id (E1), no comparison/conditional language",True,87,0.41,1.7e-05,False
+q2,What is the notice period for employee E2 if they resign?,workflow,"1 employee id (E2), no comparison/conditional language",True,84,0.15,1.7e-05,False
+q3,How many days of notice does employee E3 need to give?,workflow,"1 employee id (E3), no comparison/conditional language",True,84,0.17,1.7e-05,False
+q4,How many days of notice does employee E4 need to give?,workflow,"1 employee id (E4), no comparison/conditional language",True,84,0.15,1.7e-05,False
+q5,What notice period applies to employee E5?,workflow,"1 employee id (E5), no comparison/conditional language",True,82,0.17,1.6e-05,False
+q6,What notice period applies to employee E6?,workflow,"1 employee id (E6), no comparison/conditional language",True,82,0.16,1.6e-05,False
+q7,Employee E7 wants to resign -- what is their required notice period?,workflow,"1 employee id (E7), no comparison/conditional language",True,88,0.2,1.8e-05,False
+q8,Employee E8 wants to resign -- what is their required notice period?,workflow,"1 employee id (E8), no comparison/conditional language",True,88,0.16,1.8e-05,False
+q9,Employee E9 wants to resign -- what is their required notice period?,workflow,"1 employee id (E9), no comparison/conditional language",True,88,0.17,1.8e-05,False
+q10,Employee E10 wants to resign -- what is their required notice period?,workflow,"1 employee id (E10), no comparison/conditional language",True,92,0.17,1.8e-05,False
+q11_comparison,Compare the notice periods for employee E1 and employee E2 -- which one needs to give more notice?,agent,comparison/conditional language detected ('compare'),True,2991,1.77,0.000598,False

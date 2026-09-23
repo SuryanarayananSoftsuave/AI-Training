@@ -1,0 +1,21 @@
+All 10 questions follow the identical two-tool path (get_employee_record, then
+get_notice_period_rule) regardless of jurisdiction or tenure -- only the argument
+values change, never which tools fire or in what order. By the decision rule
+(does the path vary by input?), none of these 10 forces an agent: the workflow
+matches the agent's 100% pass rate while being ~16x faster (p50 1.05s vs
+16.40s) and ~17x cheaper in tokens (859 vs 14,972 across all 10). A genuinely
+agent-requiring class would be one where the NEXT tool depends on a prior
+tool's *result*, not just its arguments -- e.g. "What is E1's notice period,
+and if above 60 days, also check the handbook for extended-leave overlap
+rules" -- a real conditional branch in which tool fires. None of the 10
+questions here have that shape, so a fixed workflow is correct for this task
+as scoped.
+
+Addendum (not scored, tested live -- see branching_case_demo.txt): a
+multi-employee comparison question ("compare E1 and E2's notice periods")
+confirms this isn't hypothetical. The agent's tool-call path itself changed
+shape -- 4 calls across 2 employees, discovered by its own reasoning, not
+just different argument values -- and answered correctly (75 vs 60 days).
+The workflow's regex grabs only the first employee ID by construction and
+could not answer for E2 at all. This is the named input class: questions
+whose entity count or structure varies, not just their field values.

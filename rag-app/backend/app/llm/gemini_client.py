@@ -78,10 +78,12 @@ class GeminiClient:
             if chunk.text:
                 yield chunk.text
 
-    async def judge_answer(self, question: str, answer: str, numbered_context: str, temperature: float) -> Judgment:
+    async def judge_answer(
+        self, question: str, answer: str, numbered_context: str, temperature: float, prompt_version: str | None = None
+    ) -> Judgment:
         response = await self._client.aio.models.generate_content(
             model=self._judge_model,
-            contents=render_judge(question, answer, numbered_context),
+            contents=render_judge(question, answer, numbered_context, version=prompt_version),
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
                 response_schema=_JudgeOutput,

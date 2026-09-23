@@ -1,0 +1,43 @@
+Supplementary evidence for verdict.txt -- NOT part of the scored 10-question
+race in race.csv (those 10 are single-employee lookups only). This is a
+separate, real, live-run test of a genuinely path-varying question class:
+multi-employee comparison. Captured via:
+
+    python scripts/run_workflow_demo.py "Compare the notice periods for employee E1 and employee E2 -- which one needs to give more notice?"
+    python scripts/run_agent_demo.py    "Compare the notice periods for employee E1 and employee E2 -- which one needs to give more notice?"
+
+--- Workflow (fixed, hard-coded steps) ---
+Question: Compare the notice periods for employee E1 and employee E2 -- which one needs to give more notice?
+
+Answer: Employee E1 needs to give more notice, as their notice period is 75 days, while the notice period for employee E2 is not provided in the known facts.
+Tokens: 114  Time: 0.83s  Error: none
+
+The workflow's employee-ID regex (agents/workflow.py::_EMPLOYEE_ID_RE.search)
+matches only the FIRST id in the text, so it never even attempts to look up
+E2 -- structurally incapable of answering a multi-employee question
+correctly, no matter how the phrasing prompt is tuned.
+
+--- Agent (ReAct loop) ---
+Question: Compare the notice periods for employee E1 and employee E2 -- which one needs to give more notice?
+
+Step 1: thought='I need to compare the notice periods for E1 and E2. To do that, I first need to know their jurisdictions and tenures. I will start by looking up the record for E1.'
+         action=get_employee_record({'employee_id': 'E1'}) -> {"employee_id": "E1", "jurisdiction": "india", "tenure_years": 5.0}
+Step 2: thought='I have the record for E1 (jurisdiction: india, tenure: 5.0 years). Now I need the record for E2 to compare their notice periods.'
+         action=get_employee_record({'employee_id': 'E2'}) -> {"employee_id": "E2", "jurisdiction": "india", "tenure_years": 1.0}
+Step 3: thought='I have the records for both employees. E1 is in India with 5.0 years of tenure, and E2 is in India with 1.0 year of tenure. To compare their notice periods, I first need to calculate the notice period for E1 using the jurisdiction and tenure I just retrieved.'
+         action=get_notice_period_rule({'jurisdiction': 'india', 'tenure_years': 5.0}) -> {"jurisdiction": "india", "tenure_years": 5.0, "notice_period_days": 75}
+Step 4: thought='I have the notice period for E1 (75 days). Now I need to calculate the notice period for E2 (jurisdiction: india, tenure: 1.0 years) to compare them.'
+         action=get_notice_period_rule({'jurisdiction': 'india', 'tenure_years': 1.0}) -> {"jurisdiction": "india", "tenure_years": 1.0, "notice_period_days": 60}
+
+Answer: Employee E1 needs to give more notice. E1 (5 years tenure in India) requires a 75-day notice period, while E2 (1 year tenure in India) requires a 60-day notice period.
+Laps: 5  Tokens: 2991  Time: 2.10s  Terminated: normally
+
+--- Reading ---
+The agent's tool-call PATH itself changed shape for this input (4 tool calls
+across 2 distinct employees, discovered by its own reasoning about how many
+entities the question named) -- not just the argument values passed to a
+fixed 2-call sequence, which is all the official 10 race questions ever
+exercise. The workflow cannot take this path at all: its step order and
+call count are hard-coded to exactly one employee, by construction. This is
+the concrete instance of the input class verdict.txt's main paragraph
+describes only hypothetically.

@@ -4,7 +4,9 @@ import os
 
 import streamlit as st
 
+from agent_view import render_agent_race_panel, render_conversation_panel, render_dispatcher_panel, render_results_showcase_panel
 from chat_view import render_history, submit_query
+from eval_metrics import render_week6_eval_panel
 from sidebar import render_sidebar
 from trace_batch import render_trace_batch_panel
 from utils.api_client import BackendClient
@@ -25,6 +27,11 @@ settings = render_sidebar(client, BACKEND_URL)
 st.title("📋 HR Policy RAG")
 
 render_trace_batch_panel(client, settings)
+render_week6_eval_panel(client)
+render_results_showcase_panel(client)
+render_agent_race_panel(client)
+render_dispatcher_panel(client)
+render_conversation_panel(client)
 
 render_history(st.session_state.messages)
 

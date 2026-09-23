@@ -58,6 +58,7 @@ class Citation(BaseModel):
     doc_id: str
     filename: str
     page_number: int | None
+    section_heading: str | None = None
     chunk_id: str
     snippet: str
     rerank_score: float
@@ -107,7 +108,10 @@ class ChatStreamFinal(BaseModel):
 
     answer: str
     citations: list[Citation]
-    judgment: Judgment
+    # None only when the caller explicitly requested skip_judge=True
+    # (Week 6 eval harness's blind-labeling step) -- the live /chat route
+    # never sets skip_judge, so this is always populated for real traffic.
+    judgment: Judgment | None
     retrieval_debug: RetrievalDebug
 
 

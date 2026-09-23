@@ -108,10 +108,18 @@ class Settings(BaseSettings):
     langfuse_enabled: bool = False
     langfuse_public_key: str = ""
     langfuse_secret_key: str = ""
-    langfuse_host: str = "http://localhost:3000"
+    langfuse_host: str = "http://localhost:3001"
 
     # --- Server --------------------------------------------------------
     cors_origins: list[str] = ["http://localhost:8501"]
+
+    # --- Week 7 agent conversation memory (bonus) ------------------------
+    # Window/summary live only in-memory (app.state.agent_conversations) and
+    # are deliberately lost on restart; session_store_path is the one thing
+    # that survives one (see app/registry/session_store.py).
+    conversation_window_turns: int = 6
+    conversation_fold_batch_size: int = 3
+    session_store_path: str = "data/registry/sessions.json"
 
 
 @lru_cache

@@ -7,6 +7,10 @@ from typing import Iterator
 import httpx
 
 _DEFAULT_TIMEOUT = httpx.Timeout(120.0, connect=10.0)
+# A live Week 6 run is ~25 cases x (generate + judge) real LLM calls
+# sequentially -- minutes, not seconds -- so it needs its own, much longer
+# read timeout rather than the default single-call one above.
+_EVAL_TIMEOUT = httpx.Timeout(1800.0, connect=10.0)
 
 
 class BackendClient:
@@ -84,3 +88,52 @@ class BackendClient:
         response = self._client.get("/health")
         response.raise_for_status()
         return response.json()
+
+    def ask_agent(self, question: str) -> dict:
+        """Week 7 demo: runs both the ReAct agent and the fixed workflow
+        for one question, returns both results for side-by-side display.
+        """
+        response = self._client.post("/agents/ask", json={"question": question})
+        response.raise_for_status()
+        return response.json()
+
+    def ask_dispatch(self, question: str) -> dict:
+        """Week 7 extra: runs only whichever system the hybrid dispatcher
+        picks for this question (not both), returning which one and why.
+        """
+        response = self._client.post("/agents/dispatch", json={"question": question})
+        response.raise_for_status()
+        return response.json()
+
+    def ask_conversation(self, session_id: str, question: str) -> dict:
+        """Week 7 bonus: one turn of a multi-turn agent conversation, kept
+        alive server-side by session_id across calls.
+        """
+        response = self._client.post("/agents/chat", json={"session_id": session_id, "question": question})
+        response.raise_for_status()
+        return response.json()
+
+    def get_agent_results(self) -> dict:
+        """Week 7 showcase: the real, already-generated deliverable files
+        (race.csv, dispatch_race.csv, verdict.txt, etc.) read straight off
+        disk by the backend -- nothing recomputed here.
+        """
+        response = self._client.get("/agents/results")
+        response.raise_for_status()
+        return response.json()
+
+    def run_week6_eval(self, provider: str = "gemini", include_regressions: bool = True) -> Iterator[tuple[str, dict]]:
+        """Yields ("progress", {...}) as each case starts/finishes, then
+        exactly one ("final", {"results": [...], "report": {...}}) -- a live
+        run against the real pipeline, not a replay of a saved file.
+        """
+        payload = {"provider": provider, "include_regressions": include_regressions}
+        with self._client.stream("POST", "/evals/week6/run", json=payload, timeout=_EVAL_TIMEOUT) as response:
+            response.raise_for_status()
+            event_type: str | None = None
+            for line in response.iter_lines():
+                if line.startswith("event:"):
+                    event_type = line[len("event:"):].strip()
+                elif line.startswith("data:") and event_type is not None:
+                    yield (event_type, json.loads(line[len("data:"):].strip()))
+                    event_type = None
