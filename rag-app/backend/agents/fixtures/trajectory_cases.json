@@ -1,0 +1,123 @@
+{
+  "_comment": "Week 8 (W8-Task-Set-C.md): 10 cases for trajectory scoring, deliberately NOT reusing Week 7's employee_questions.json -- those 10 are documented (verdict.txt) to force an identical 2-tool path regardless of input, which would manufacture a fake 0% outcome-vs-trajectory gap. Cases t08/t09 are 2-turn conversations built to exercise the real gap found in agents/conversation.py: ConversationState persists jurisdiction across turns but never tenure_years, so a later turn can be answered by guessing tenure instead of re-checking it.",
+  "cases": [
+    {
+      "id": "t01",
+      "type": "single_turn",
+      "question": "What is the notice period for employee E1 if they resign?",
+      "expected_sequences": [["get_employee_record", "get_notice_period_rule"]],
+      "relevant_employee_ids": ["E1"],
+      "expected_days": 75,
+      "min_steps_needed": 2,
+      "expects_section_citation": false,
+      "note": "Baseline: india, 5.0y tenure, long-service bonus applies (60+15)."
+    },
+    {
+      "id": "t02",
+      "type": "single_turn",
+      "question": "How many days of notice does employee E2 need to give?",
+      "expected_sequences": [["get_employee_record", "get_notice_period_rule"]],
+      "relevant_employee_ids": ["E2"],
+      "expected_days": 60,
+      "min_steps_needed": 2,
+      "expects_section_citation": false,
+      "note": "Baseline: india, 1.0y tenure, no bonus."
+    },
+    {
+      "id": "t03",
+      "type": "single_turn",
+      "question": "Employee E4 wants to resign -- what is their required notice period?",
+      "expected_sequences": [["get_employee_record", "get_notice_period_rule"]],
+      "relevant_employee_ids": ["E4"],
+      "expected_days": 14,
+      "min_steps_needed": 2,
+      "expects_section_citation": false,
+      "note": "Baseline: us, 0.5y tenure, no bonus -- different jurisdiction from t01/t02."
+    },
+    {
+      "id": "t04",
+      "type": "single_turn",
+      "question": "What notice period applies to employee E5?",
+      "expected_sequences": [["get_employee_record", "get_notice_period_rule"]],
+      "relevant_employee_ids": ["E5"],
+      "expected_days": 45,
+      "min_steps_needed": 2,
+      "expects_section_citation": false,
+      "note": "Baseline: uk, 4.0y tenure, bonus applies (30+15)."
+    },
+    {
+      "id": "t05",
+      "type": "single_turn",
+      "question": "Compare the notice periods for employee E1 and employee E2 -- which one needs to give more notice?",
+      "sequence_rule": "lookup_before_rule_per_employee",
+      "relevant_employee_ids": ["E1", "E2"],
+      "expected_days": null,
+      "expected_days_by_employee": {"E1": 75, "E2": 60},
+      "min_steps_needed": 4,
+      "expects_section_citation": false,
+      "note": "The 'assert as a SET, not a sequence' case (req #1): each employee's lookup must precede that employee's rule call, but which employee is looked up first is unconstrained -- multiple concrete step orders are equally correct."
+    },
+    {
+      "id": "t06",
+      "type": "single_turn",
+      "question": "What is Asha Rao's notice period?",
+      "expected_sequences": [],
+      "relevant_employee_ids": [],
+      "expected_days": null,
+      "min_steps_needed": 0,
+      "expects_section_citation": false,
+      "diagnostic_only": true,
+      "note": "Asha Rao is E1's real name (employees.py), but the agent is never given a name-to-ID mapping and get_employee_record only accepts an ID. Correct behavior is to say it cannot resolve a name to an ID; this case is excluded from tool-choice/outcome averages (genuinely no single correct tool sequence) and only feeds the hallucinated-employee-id zoo-mode detector."
+    },
+    {
+      "id": "t07",
+      "type": "single_turn",
+      "question": "What are the core hours for remote workers, and which policy section number is that from?",
+      "expected_sequences": [["search_handbook"]],
+      "relevant_employee_ids": [],
+      "expected_days": null,
+      "min_steps_needed": 1,
+      "expects_section_citation": true,
+      "note": "No employee involved -- exercises search_handbook alone. Explicitly asks for a section number (found live: search_handbook returns the real section heading '3. Remote Work Days & Core Hours', but the agent wasn't repeating it in its spoken answer unless directly asked) -- this is what actually gives section_number_validity_rate a non-n/a value to report."
+    },
+    {
+      "id": "t08",
+      "type": "conversation",
+      "turns": [
+        "What is employee E7's jurisdiction and tenure?",
+        "So what's their notice period?"
+      ],
+      "expected_sequences": [["get_employee_record", "get_notice_period_rule"]],
+      "relevant_employee_ids": ["E7"],
+      "expected_days": 75,
+      "min_steps_needed": 2,
+      "expects_section_citation": false,
+      "note": "Only turn 2 is scored (turn 1 just seeds ConversationState with E7's jurisdiction). E7's tenure is exactly 2.0y -- right at the long-service bonus threshold -- a boundary case for the guessed-without-reading-tenure mode."
+    },
+    {
+      "id": "t09",
+      "type": "conversation",
+      "turns": [
+        "What is employee E9's jurisdiction and tenure?",
+        "And what notice period do they need to give?"
+      ],
+      "expected_sequences": [["get_employee_record", "get_notice_period_rule"]],
+      "relevant_employee_ids": ["E9"],
+      "expected_days": 30,
+      "min_steps_needed": 2,
+      "expects_section_citation": false,
+      "note": "Only turn 2 is scored. E9 is in the 4/10 minority WITHOUT the long-service bonus -- guessing the majority pattern (most employees have the bonus) here produces a wrong NUMBER, not just a wrong path, making this the case most likely to surface a genuine outcome failure or a right-answer-by-luck/wrong-path split."
+    },
+    {
+      "id": "t10",
+      "type": "single_turn",
+      "question": "What is the notice period for employee E3, and please double check by searching the handbook too?",
+      "expected_sequences": [["get_employee_record", "get_notice_period_rule"]],
+      "relevant_employee_ids": ["E3"],
+      "expected_days": 29,
+      "min_steps_needed": 2,
+      "expects_section_citation": false,
+      "note": "Enough information exists after 2 tool calls (us, 3.0y -> 14+15). Tests step efficiency: does the agent add an unneeded 3rd search_handbook call because the question asked it to?"
+    }
+  ]
+}
