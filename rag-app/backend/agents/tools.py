@@ -52,13 +52,27 @@ async def search_handbook(query: str, settings: Settings, store: QdrantStore) ->
     """Real retrieval against the already-indexed HR policy docs -- reuses
     the exact same retrieve_candidates/rerank_candidates the main /chat
     pipeline uses, not a mocked or hardcoded answer.
+
+    `section_heading` (Week 8, W8-Task-Set-C.md): the same chunk-payload
+    field `Citation`/`chat_service.py` already surface in the main chat
+    pipeline, exposed here too so the agent has a real chance to cite a
+    checkable section number in its final answer -- without this, "were the
+    policy section numbers real or fluent fiction" (requirement #2) would
+    have no natural samples to measure, since no tool here takes a section
+    number as an argument. Additive only: existing callers that only read
+    `result`/`source`/`rerank_score` are unaffected.
     """
     candidates, _total = await retrieve_candidates([query], True, settings.first_stage_limit, None, settings, store)
     if not candidates:
         return {"result": "no matching policy text found"}
     ranked = await rerank_candidates(settings.reranker_model_name, query, candidates, 1)
     point, score = ranked[0]
-    return {"result": point.payload["text"][:500], "source": point.payload["filename"], "rerank_score": round(score, 3)}
+    return {
+        "result": point.payload["text"][:500],
+        "source": point.payload["filename"],
+        "section_heading": point.payload.get("section_heading"),
+        "rerank_score": round(score, 3),
+    }
 
 
 async def get_notice_period_rule(jurisdiction: Jurisdiction, tenure_years: float) -> dict:

@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 from langfuse import Langfuse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import agents, chat, documents, evals, health
+from app.api import agents, analysis, chat, documents, evals, health, mcp, retrieval_lab
 from app.core.config import get_settings
 from app.ingestion.embedder import get_embedder
 from app.llm.gemini_client import GeminiClient
@@ -163,3 +163,6 @@ app.include_router(chat.router)
 app.include_router(health.router)
 app.include_router(agents.router)
 app.include_router(evals.router)
+app.include_router(retrieval_lab.router)
+app.include_router(analysis.router)
+app.include_router(mcp.router)

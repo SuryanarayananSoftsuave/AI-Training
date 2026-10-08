@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "policy-search": {
+      "args": ["-m", "agents.mcp_servers.policy_search_server"]
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "before": {
+    "question": "What does the leave policy say, as of 2000-01-01?",
+    "answer": "I'm sorry, but I wasn't able to retrieve the leave policy from the HR handbook \u2014 the search returned a \"not found\" error. This could mean the policy isn't available for that date, or the handbook isn't accessible.\n\nIf you can share the policy text or clarify the topic, I'd be happy to help interpret it.",
+    "terminated_reason": null,
+    "steps": [
+      {
+        "thought": "",
+        "action": "search_handbook",
+        "action_input": {
+          "as_of": "2000-01-01",
+          "query": "leave policy"
+        },
+        "observation": "Error calling tool 'search_handbook': not found"
+      }
+    ]
+  },
+  "after": {
+    "question": "What does the leave policy say, as of 2000-01-01?",
+    "answer": "There is no leave policy version effective on 2000-01-01. The earliest version indexed in the handbook is **2026-09-02**, so no policy text from that date exists to retrieve.\n\nIf you'd like, I can pull the leave policy from the earliest available version (2026-09-02) or the currently indexed version instead.",
+    "terminated_reason": null,
+    "steps": [
+      {
+        "thought": "",
+        "action": "search_handbook",
+        "action_input": {
+          "as_of": "2000-01-01",
+          "query": "leave policy"
+        },
+        "observation": "Error calling tool 'search_handbook': no policy version effective 2000-01-01: earliest indexed is 2026-09-02"
+      }
+    ]
+  }
+}

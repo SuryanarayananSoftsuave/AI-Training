@@ -113,6 +113,17 @@ class Settings(BaseSettings):
     # --- Server --------------------------------------------------------
     cors_origins: list[str] = ["http://localhost:8501"]
 
+    # --- Week 9 MCP -----------------------------------------------------
+    # The policy-search MCP server (agents/mcp_servers/policy_search_server.py)
+    # runs as its own subprocess -- loading a SECOND copy of the embedder +
+    # reranker there (in addition to the copy this main FastAPI process
+    # already holds) hit a real OS-level "paging file too small" crash on a
+    # dev machine already running the full stack (backend+frontend+Docker),
+    # not just a theoretical slowdown. So that server calls back to THIS
+    # already-running process's own /mcp/internal/search-handbook instead of
+    # loading its own models -- this is where it finds it.
+    backend_internal_url: str = "http://localhost:8000"
+
     # --- Week 7 agent conversation memory (bonus) ------------------------
     # Window/summary live only in-memory (app.state.agent_conversations) and
     # are deliberately lost on restart; session_store_path is the one thing

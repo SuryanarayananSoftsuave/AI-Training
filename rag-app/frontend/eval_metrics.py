@@ -9,15 +9,34 @@ from utils.api_client import BackendClient
 
 def _get_state() -> dict:
     if "week6_eval_state" not in st.session_state:
-        st.session_state.week6_eval_state = {"running": False, "progress": [], "report": None, "error": None}
+        st.session_state.week6_eval_state = {
+            "running": False, "stop": False, "stopped": False, "progress": [], "report": None, "error": None,
+        }
     return st.session_state.week6_eval_state
 
 
 def _run_worker(client: BackendClient, provider: str, state: dict) -> None:
+    """25 cases is real LLM cost (generate + judge per case) -- `stream`
+    is kept as a reference specifically so Stop can call `.close()` on it
+    directly: closing the underlying SSE connection makes the backend's
+    StreamingResponse detect the client disconnect and cancel whatever
+    case is still in flight server-side, not just stop the UI from
+    showing further progress. Same pattern as trace_batch.py's per-question stop.
+    """
+    stream = client.run_week6_eval(provider=provider)
     try:
-        for event_type, data in client.run_week6_eval(provider=provider):
+        for event_type, data in stream:
+            if state["stop"]:
+                stream.close()
+                state["stopped"] = True
+                break
             if event_type == "progress":
                 state["progress"].append(data)
+            elif event_type == "error":
+                # A mid-run failure (e.g. a transient LLM provider error) --
+                # named which case it hit, instead of just dropping the
+                # connection and leaving a generic transport error.
+                state["error"] = f"case {data.get('id')}: {data.get('message', 'unknown error')}"
             elif event_type == "final":
                 state["report"] = data["report"]
     except Exception as exc:
@@ -83,14 +102,25 @@ def _live_eval_panel(client: BackendClient, provider: str) -> None:
             st.progress(done / total, text=f"Running... {done}/{total} cases graded (real LLM calls, a few minutes)")
         else:
             st.caption("Starting...")
+        if st.button("⏹ Stop", key="stop_week6_eval", type="primary"):
+            state["stop"] = True
     else:
         if st.button("▶ Run Week 6 eval" if state["report"] is None else "▶ Run again", key="run_week6_eval"):
             state["running"] = True
+            state["stop"] = False
+            state["stopped"] = False
             state["progress"] = []
             state["report"] = None
             state["error"] = None
             threading.Thread(target=_run_worker, args=(client, provider, state), daemon=True).start()
             st.rerun(scope="fragment")
+
+    if state["stopped"]:
+        done = sum(1 for p in state["progress"] if p["status"] == "done")
+        st.warning(
+            f"Stopped after {done} case(s) -- the case already in progress when you clicked Stop finished, "
+            "but no further case was started. No report shown for a partial run (pass-rate-by-mode needs the full set)."
+        )
 
     if state["error"]:
         st.error(f"Eval run failed: {state['error']}")
@@ -100,11 +130,11 @@ def _live_eval_panel(client: BackendClient, provider: str) -> None:
 
 
 def render_week6_eval_panel(client: BackendClient) -> None:
-    with st.expander("📊 Week 6 eval — accuracy / precision / recall", expanded=False):
-        st.caption(
-            "Re-runs all Week 6 cases through the live pipeline (real LLM calls) and scores them: "
-            "pass rate per deterministic check, plus a precision/recall/F1 confusion matrix for the "
-            "refusal check and, once blind human labels exist, for the judge's grounded verdict."
-        )
-        provider = st.selectbox("Provider", ["gemini", "groq"], key="week6_eval_provider")
-        _live_eval_panel(client, provider)
+    st.subheader("📊 Automated Eval")
+    st.caption(
+        "Re-runs all Week 6 cases through the live pipeline (real LLM calls) and scores them: "
+        "pass rate per deterministic check, plus a precision/recall/F1 confusion matrix for the "
+        "refusal check and, once blind human labels exist, for the judge's grounded verdict."
+    )
+    provider = st.selectbox("Provider", ["gemini", "groq"], key="week6_eval_provider")
+    _live_eval_panel(client, provider)

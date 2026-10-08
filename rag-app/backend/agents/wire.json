@@ -1,0 +1,168 @@
+[
+  {
+    "direction": "client->server",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "protocolVersion": "2025-11-25",
+        "capabilities": {},
+        "clientInfo": {
+          "name": "mcp",
+          "version": "0.1.0"
+        },
+        "_meta": {
+          "traceparent": "00-7757d7f027f6a5b6d0fe5d0f8719500c-5167dce1c141c708-03"
+        }
+      }
+    }
+  },
+  {
+    "direction": "server->client",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": {
+        "protocolVersion": "2025-11-25",
+        "capabilities": {
+          "logging": {},
+          "prompts": {
+            "listChanged": false
+          },
+          "resources": {
+            "subscribe": false,
+            "listChanged": false
+          },
+          "tools": {
+            "listChanged": true
+          }
+        },
+        "serverInfo": {
+          "name": "hris",
+          "version": "4.0.8"
+        }
+      }
+    }
+  },
+  {
+    "direction": "client->server",
+    "frame": {
+      "jsonrpc": "2.0",
+      "method": "notifications/initialized"
+    }
+  },
+  {
+    "direction": "client->server",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "tools/list",
+      "params": {
+        "_meta": {
+          "traceparent": "00-0bdd43a0e35ff5a28e6433bd76338474-4609c878c9b6c999-03"
+        }
+      }
+    }
+  },
+  {
+    "direction": "server->client",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "tools": [
+          {
+            "_meta": {
+              "fastmcp": {
+                "tags": []
+              }
+            },
+            "description": "Look up an employee's HRIS grade band by employee id.",
+            "inputSchema": {
+              "properties": {
+                "employee_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "employee_id"
+              ],
+              "type": "object",
+              "additionalProperties": false
+            },
+            "name": "get_grade_band",
+            "outputSchema": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "title": "Get Grade Band"
+          },
+          {
+            "_meta": {
+              "fastmcp": {
+                "tags": []
+              }
+            },
+            "description": "Look up an employee's current accrued leave balance, in days, from the HRIS.",
+            "inputSchema": {
+              "properties": {
+                "employee_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "employee_id"
+              ],
+              "type": "object",
+              "additionalProperties": false
+            },
+            "name": "get_accrued_leave_balance",
+            "outputSchema": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "title": "Get Accrued Leave Balance"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "direction": "client->server",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "tools/call",
+      "params": {
+        "name": "get_grade_band",
+        "arguments": {
+          "employee_id": "E3"
+        },
+        "_meta": {
+          "traceparent": "00-baf75fc9d2a102e11f0888c97dbe2f1c-fa269908dbac8e98-03"
+        }
+      }
+    }
+  },
+  {
+    "direction": "server->client",
+    "frame": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "content": [
+          {
+            "text": "{\"employee_id\":\"E3\",\"grade_band\":\"G5\"}",
+            "type": "text"
+          }
+        ],
+        "isError": false,
+        "structuredContent": {
+          "employee_id": "E3",
+          "grade_band": "G5"
+        }
+      }
+    }
+  }
+]

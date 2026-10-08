@@ -1,0 +1,463 @@
+{
+  "n_cases": 10,
+  "n_scorable": 7,
+  "n_errored": 2,
+  "tool_choice_accuracy": 71.4,
+  "argument_validity_rate": 100.0,
+  "argument_checks_total": 7,
+  "employee_id_validity_rate": 100.0,
+  "employee_id_checks_total": 6,
+  "section_number_validity_rate": 100.0,
+  "section_number_checks_total": 1,
+  "step_efficiency_avg": 1.0,
+  "cost_p50_usd": 0.000307,
+  "cost_max_usd": 0.000598,
+  "outcome_pass_rate": 83.3,
+  "gap": 11.9,
+  "named_right_answer_wrong_path_example": {
+    "id": "t08",
+    "question": "So what's their notice period?",
+    "answer": "Employee E7's notice period is 75 days.",
+    "steps": [
+      {
+        "thought": "I know the jurisdiction is India and the tenure is 2.0 years. I need to compute the notice period using the specific rule tool.",
+        "action": "get_notice_period_rule",
+        "action_input": {
+          "jurisdiction": "india",
+          "tenure_years": 2.0
+        },
+        "observation": "{\"jurisdiction\": \"india\", \"tenure_years\": 2.0, \"notice_period_days\": 75}"
+      }
+    ],
+    "terminated_reason": null,
+    "total_tokens": 1819,
+    "cost_usd": 0.000364,
+    "wall_clock_s": 55.79,
+    "tool_choice_passed": false,
+    "tool_choice_detail": "actual ['get_notice_period_rule'] NOT in expected [['get_employee_record', 'get_notice_period_rule']]",
+    "employee_id_checked": 0,
+    "employee_id_valid": 0,
+    "section_checked": 0,
+    "section_valid": 0,
+    "argument_checked": 0,
+    "argument_valid": 0,
+    "argument_issues": [],
+    "step_efficiency": 0.5,
+    "outcome_passed": true,
+    "zoo_modes": [
+      "wrong_tool_or_extra_call",
+      "guessed_without_reading_tenure"
+    ],
+    "diagnostic_only": false,
+    "error": null
+  },
+  "mode_counts": {
+    "case_errored": 2,
+    "gave_up_quietly": 1,
+    "hallucinated_employee_id": 1,
+    "wrong_tool_or_extra_call": 2,
+    "guessed_without_reading_tenure": 1,
+    "loop_or_budget_blowout": 1
+  },
+  "cases": [
+    {
+      "id": "t01",
+      "question": "What is the notice period for employee E1 if they resign?",
+      "answer": "The notice period for employee E1 is 75 days.",
+      "steps": [
+        {
+          "thought": "To determine the notice period for employee E1, I first need to know their specific jurisdiction and tenure in years. The tool `get_employee_record` is designed to look up this information using the employee ID. Once I have these details, I can then use `get_notice_period_rule` to calculate the exact notice period.",
+          "action": "get_employee_record",
+          "action_input": {
+            "employee_id": "E1"
+          },
+          "observation": "{\"employee_id\": \"E1\", \"jurisdiction\": \"india\", \"tenure_years\": 5.0}"
+        },
+        {
+          "thought": "I now have employee E1's jurisdiction (india) and tenure (5.0 years). The next step is to use the get_notice_period_rule tool with these specific values to calculate the exact notice period in days.",
+          "action": "get_notice_period_rule",
+          "action_input": {
+            "jurisdiction": "india",
+            "tenure_years": 5.0
+          },
+          "observation": "{\"jurisdiction\": \"india\", \"tenure_years\": 5.0, \"notice_period_days\": 75}"
+        }
+      ],
+      "terminated_reason": null,
+      "total_tokens": 1531,
+      "cost_usd": 0.000306,
+      "wall_clock_s": 1.48,
+      "tool_choice_passed": true,
+      "tool_choice_detail": "actual ['get_employee_record', 'get_notice_period_rule'] in expected [['get_employee_record', 'get_notice_period_rule']]",
+      "employee_id_checked": 1,
+      "employee_id_valid": 1,
+      "section_checked": 0,
+      "section_valid": 0,
+      "argument_checked": 1,
+      "argument_valid": 1,
+      "argument_issues": [],
+      "step_efficiency": 1.0,
+      "outcome_passed": true,
+      "zoo_modes": [],
+      "diagnostic_only": false,
+      "error": null
+    },
+    {
+      "id": "t02",
+      "question": "How many days of notice does employee E2 need to give?",
+      "answer": null,
+      "steps": [],
+      "terminated_reason": null,
+      "total_tokens": 0,
+      "cost_usd": 0.0,
+      "wall_clock_s": 0.0,
+      "tool_choice_passed": false,
+      "tool_choice_detail": "case errored before scoring: Error code: 400 - {'error': {'message': \"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': '{\"action\": \"final_answer\", \"employee_id\": null, \"final_answer\": \"Employee E2 needs to give 60 days of notice.\" \u060c'}}",
+      "employee_id_checked": 0,
+      "employee_id_valid": 0,
+      "section_checked": 0,
+      "section_valid": 0,
+      "argument_checked": 0,
+      "argument_valid": 0,
+      "argument_issues": [],
+      "step_efficiency": null,
+      "outcome_passed": null,
+      "zoo_modes": [
+        "case_errored"
+      ],
+      "diagnostic_only": false,
+      "error": "Error code: 400 - {'error': {'message': \"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': '{\"action\": \"final_answer\", \"employee_id\": null, \"final_answer\": \"Employee E2 needs to give 60 days of notice.\" \u060c'}}"
+    },
+    {
+      "id": "t03",
+      "question": "Employee E4 wants to resign -- what is their required notice period?",
+      "answer": "Employee E4 is required to give 14 days' notice for their resignation.",
+      "steps": [
+        {
+          "thought": "To determine the required notice period for employee E4, I first need to know their specific jurisdiction and tenure in years. The tool `get_employee_record` is designed to look up this information using the employee ID. Once I have these two data points, I can then use `get_notice_period_rule` to calculate the exact notice period.",
+          "action": "get_employee_record",
+          "action_input": {
+            "employee_id": "E4"
+          },
+          "observation": "{\"employee_id\": \"E4\", \"jurisdiction\": \"us\", \"tenure_years\": 0.5}"
+        },
+        {
+          "thought": "I now have employee E4's jurisdiction (us) and tenure (0.5 years). I can use the get_notice_period_rule tool to compute the exact notice period in days based on these two values.",
+          "action": "get_notice_period_rule",
+          "action_input": {
+            "jurisdiction": "us",
+            "tenure_years": 0.5
+          },
+          "observation": "{\"jurisdiction\": \"us\", \"tenure_years\": 0.5, \"notice_period_days\": 14}"
+        }
+      ],
+      "terminated_reason": null,
+      "total_tokens": 1536,
+      "cost_usd": 0.000307,
+      "wall_clock_s": 4.13,
+      "tool_choice_passed": true,
+      "tool_choice_detail": "actual ['get_employee_record', 'get_notice_period_rule'] in expected [['get_employee_record', 'get_notice_period_rule']]",
+      "employee_id_checked": 1,
+      "employee_id_valid": 1,
+      "section_checked": 0,
+      "section_valid": 0,
+      "argument_checked": 1,
+      "argument_valid": 1,
+      "argument_issues": [],
+      "step_efficiency": 1.0,
+      "outcome_passed": true,
+      "zoo_modes": [],
+      "diagnostic_only": false,
+      "error": null
+    },
+    {
+      "id": "t04",
+      "question": "What notice period applies to employee E5?",
+      "answer": "The notice period that applies to employee E5 is 45 days.",
+      "steps": [
+        {
+          "thought": "To determine the notice period for employee E5, I first need to know their specific jurisdiction and tenure in years. The `get_employee_record` tool provides this information based on the employee ID.",
+          "action": "get_employee_record",
+          "action_input": {
+            "employee_id": "E5"
+          },
+          "observation": "{\"employee_id\": \"E5\", \"jurisdiction\": \"uk\", \"tenure_years\": 4.0}"
+        },
+        {
+          "thought": "I now have the jurisdiction (uk) and tenure (4.0 years) for employee E5. I need to use the get_notice_period_rule tool to compute the exact notice period based on these details.",
+          "action": "get_notice_period_rule",
+          "action_input": {
+            "jurisdiction": "uk",
+            "tenure_years": 4.0
+          },
+          "observation": "{\"jurisdiction\": \"uk\", \"tenure_years\": 4.0, \"notice_period_days\": 45}"
+        }
+      ],
+      "terminated_reason": null,
+      "total_tokens": 1429,
+      "cost_usd": 0.000286,
+      "wall_clock_s": 12.18,
+      "tool_choice_passed": true,
+      "tool_choice_detail": "actual ['get_employee_record', 'get_notice_period_rule'] in expected [['get_employee_record', 'get_notice_period_rule']]",
+      "employee_id_checked": 1,
+      "employee_id_valid": 1,
+      "section_checked": 0,
+      "section_valid": 0,
+      "argument_checked": 1,
+      "argument_valid": 1,
+      "argument_issues": [],
+      "step_efficiency": 1.0,
+      "outcome_passed": true,
+      "zoo_modes": [],
+      "diagnostic_only": false,
+      "error": null
+    },
+    {
+      "id": "t05",
+      "question": "Compare the notice periods for employee E1 and employee E2 -- which one needs to give more notice?",
+      "answer": "Employee E1 needs to give more notice. E1 (5 years tenure in India) requires a 75-day notice period, while E2 (1 year tenure in India) requires a 60-day notice period.",
+      "steps": [
+        {
+          "thought": "I need to compare the notice periods for E1 and E2. To do that, I first need to know their jurisdictions and tenures. I will start by looking up the record for E1.",
+          "action": "get_employee_record",
+          "action_input": {
+            "employee_id": "E1"
+          },
+          "observation": "{\"employee_id\": \"E1\", \"jurisdiction\": \"india\", \"tenure_years\": 5.0}"
+        },
+        {
+          "thought": "I have the record for E1 (jurisdiction: india, tenure: 5.0 years). Now I need the record for E2 to compare their notice periods.",
+          "action": "get_employee_record",
+          "action_input": {
+            "employee_id": "E2"
+          },
+          "observation": "{\"employee_id\": \"E2\", \"jurisdiction\": \"india\", \"tenure_years\": 1.0}"
+        },
+        {
+          "thought": "I have the records for both employees. E1 is in India with 5.0 years of tenure, and E2 is in India with 1.0 year of tenure. To compare their notice periods, I first need to calculate the notice period for E1 using the jurisdiction and tenure I just retrieved.",
+          "action": "get_notice_period_rule",
+          "action_input": {
+            "jurisdiction": "india",
+            "tenure_years": 5.0
+          },
+          "observation": "{\"jurisdiction\": \"india\", \"tenure_years\": 5.0, \"notice_period_days\": 75}"
+        },
+        {
+          "thought": "I have the notice period for E1 (75 days). Now I need to calculate the notice period for E2 (jurisdiction: india, tenure: 1.0 years) to compare them.",
+          "action": "get_notice_period_rule",
+          "action_input": {
+            "jurisdiction": "india",
+            "tenure_years": 1.0
+          },
+          "observation": "{\"jurisdiction\": \"india\", \"tenure_years\": 1.0, \"notice_period_days\": 60}"
+        }
+      ],
+      "terminated_reason": null,
+      "total_tokens": 2991,
+      "cost_usd": 0.000598,
+      "wall_clock_s": 30.26,
+      "tool_choice_passed": true,
+      "tool_choice_detail": "sequence_rule=lookup_before_rule_per_employee -> pass (actual: ['get_employee_record', 'get_employee_record', 'get_notice_period_rule', 'get_notice_period_rule'])",
+      "employee_id_checked": 2,
+      "employee_id_valid": 2,
+      "section_checked": 0,
+      "section_valid": 0,
+      "argument_checked": 2,
+      "argument_valid": 2,
+      "argument_issues": [],
+      "step_efficiency": 1.0,
+      "outcome_passed": true,
+      "zoo_modes": [
+        "gave_up_quietly"
+      ],
+      "diagnostic_only": false,
+      "error": null
+    },
+    {
+      "id": "t06",
+      "question": "What is Asha Rao's notice period?",
+      "answer": "I'm unable to find an employee record for 'Asha Rao' in the system. Please verify the correct employee ID or spelling of the name so I can look up her notice period.",
+      "steps": [
+        {
+          "thought": "To determine Asha Rao's notice period, I first need to know her specific employee details, specifically her jurisdiction and tenure in years. The tool `get_employee_record` is designed to look up this information using the employee's name or ID. Since I don't have her tenure or jurisdiction yet, this is the necessary first step.",
+          "action": "get_employee_record",
+          "action_input": {
+            "employee_id": "Asha Rao"
+          },
+          "observation": "{\"error\": \"no employee with id 'Asha Rao'\"}"
+        }
+      ],
+      "terminated_reason": null,
+      "total_tokens": 936,
+      "cost_usd": 0.000187,
+      "wall_clock_s": 15.07,
+      "tool_choice_passed": true,
+      "tool_choice_detail": "diagnostic-only case, not scored for tool-choice accuracy (actual: ['get_employee_record'])",
+      "employee_id_checked": 1,
+      "employee_id_valid": 0,
+      "section_checked": 0,
+      "section_valid": 0,
+      "argument_checked": 1,
+      "argument_valid": 0,
+      "argument_issues": [
+        "hallucinated employee_id 'Asha Rao' (not in EMPLOYEES)"
+      ],
+      "step_efficiency": null,
+      "outcome_passed": null,
+      "zoo_modes": [
+        "hallucinated_employee_id"
+      ],
+      "diagnostic_only": true,
+      "error": null
+    },
+    {
+      "id": "t07",
+      "question": "What are the core hours for remote workers, and which policy section number is that from?",
+      "answer": "The core hours for remote workers are 10:00 AM to 4:00 PM in their local time zone. This is specified in Section 3 of the remote work policy, titled \"Remote Work Days & Core Hours.\" (Source: remote-work-policy.pdf)\"}}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d}\u201d",
+      "steps": [
+        {
+          "thought": "The question asks about core hours for remote workers and the policy section number. This is a general policy question, not specific to any employee. I should search the HR policy handbook for information about remote work core hours.",
+          "action": "search_handbook",
+          "action_input": {
+            "query": "core hours for remote workers"
+          },
+          "observation": "{\"result\": \"## **3. Remote Work Days & Core Hours**  \\nEligible employees may work remotely up to **3 days per week** . Remote work requests are submitted via the same HR portal used for leave requests, under \\\"Time Off > Remote Work Request.\\\" Employees working remotely must remain reachable during core hours, **10:00 AM to 4:00 PM** in their local time zone.\", \"source\": \"remote-work-policy.pdf\", \"section_heading\": \"**3. Remote Work Days & Core Hours**\", \"rerank_score\": 0.73}"
+        }
+      ],
+      "terminated_reason": null,
+      "total_tokens": 1819,
+      "cost_usd": 0.000364,
+      "wall_clock_s": 28.32,
+      "tool_choice_passed": true,
+      "tool_choice_detail": "actual ['search_handbook'] in expected [['search_handbook']]",
+      "employee_id_checked": 0,
+      "employee_id_valid": 0,
+      "section_checked": 1,
+      "section_valid": 1,
+      "argument_checked": 1,
+      "argument_valid": 1,
+      "argument_issues": [],
+      "step_efficiency": 1.0,
+      "outcome_passed": null,
+      "zoo_modes": [],
+      "diagnostic_only": false,
+      "error": null
+    },
+    {
+      "id": "t08",
+      "question": "So what's their notice period?",
+      "answer": "Employee E7's notice period is 75 days.",
+      "steps": [
+        {
+          "thought": "I know the jurisdiction is India and the tenure is 2.0 years. I need to compute the notice period using the specific rule tool.",
+          "action": "get_notice_period_rule",
+          "action_input": {
+            "jurisdiction": "india",
+            "tenure_years": 2.0
+          },
+          "observation": "{\"jurisdiction\": \"india\", \"tenure_years\": 2.0, \"notice_period_days\": 75}"
+        }
+      ],
+      "terminated_reason": null,
+      "total_tokens": 1819,
+      "cost_usd": 0.000364,
+      "wall_clock_s": 55.79,
+      "tool_choice_passed": false,
+      "tool_choice_detail": "actual ['get_notice_period_rule'] NOT in expected [['get_employee_record', 'get_notice_period_rule']]",
+      "employee_id_checked": 0,
+      "employee_id_valid": 0,
+      "section_checked": 0,
+      "section_valid": 0,
+      "argument_checked": 0,
+      "argument_valid": 0,
+      "argument_issues": [],
+      "step_efficiency": 0.5,
+      "outcome_passed": true,
+      "zoo_modes": [
+        "wrong_tool_or_extra_call",
+        "guessed_without_reading_tenure"
+      ],
+      "diagnostic_only": false,
+      "error": null
+    },
+    {
+      "id": "t09",
+      "question": "And what notice period do they need to give?",
+      "answer": null,
+      "steps": [],
+      "terminated_reason": null,
+      "total_tokens": 0,
+      "cost_usd": 0.0,
+      "wall_clock_s": 0.0,
+      "tool_choice_passed": false,
+      "tool_choice_detail": "case errored before scoring: Error code: 400 - {'error': {'message': \"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': '{\"action\": \"final_answer\", \"employee_id\": null, \"final_answer\": \"Employee E9 needs to give 30 days\\' notice.\" \u060c'}}",
+      "employee_id_checked": 0,
+      "employee_id_valid": 0,
+      "section_checked": 0,
+      "section_valid": 0,
+      "argument_checked": 0,
+      "argument_valid": 0,
+      "argument_issues": [],
+      "step_efficiency": null,
+      "outcome_passed": null,
+      "zoo_modes": [
+        "case_errored"
+      ],
+      "diagnostic_only": false,
+      "error": "Error code: 400 - {'error': {'message': \"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.\", 'type': 'invalid_request_error', 'code': 'json_validate_failed', 'failed_generation': '{\"action\": \"final_answer\", \"employee_id\": null, \"final_answer\": \"Employee E9 needs to give 30 days\\' notice.\" \u060c'}}"
+    },
+    {
+      "id": "t10",
+      "question": "What is the notice period for employee E3, and please double check by searching the handbook too?",
+      "answer": null,
+      "steps": [
+        {
+          "thought": "The question asks for the notice period for a specific employee, E3. To calculate the notice period, I need to know the employee's jurisdiction and tenure. I do not have this information yet, so the first step is to look up the employee's record.",
+          "action": "get_employee_record",
+          "action_input": {
+            "employee_id": "E3"
+          },
+          "observation": "{\"employee_id\": \"E3\", \"jurisdiction\": \"us\", \"tenure_years\": 3.0}"
+        },
+        {
+          "thought": "I now have the employee's jurisdiction (us) and tenure (3.0 years). The next step is to compute the exact notice period using these values.",
+          "action": "get_notice_period_rule",
+          "action_input": {
+            "jurisdiction": "us",
+            "tenure_years": 3.0
+          },
+          "observation": "{\"jurisdiction\": \"us\", \"tenure_years\": 3.0, \"notice_period_days\": 29}"
+        },
+        {
+          "thought": "I have the computed notice period (29 days) for employee E3. The user explicitly asked to double-check by searching the handbook. I should now search the handbook for the relevant policy text to confirm or provide context for the notice period rules.",
+          "action": "search_handbook",
+          "action_input": {
+            "query": "notice period rules"
+          },
+          "observation": "{\"result\": \"|Jurisdiction|Notice Period (Emplo<br>Resignation)|yee<br>Notice Period<br>(Company-Initiated)|\\n|---|---|---|\\n|India|60 days|60 days|\\n|United States|14 days|0 days (at-will, subject to local<br>exceptions)|\\n|United Kingdom|30 days|30 days, or longer if specified in<br>the contract|\", \"source\": \"notice-period-and-termination-policy.pdf\", \"section_heading\": \"**2. Notice Period by Jurisdiction**\", \"rerank_score\": 0.708}"
+        }
+      ],
+      "terminated_reason": "max_wall_clock",
+      "total_tokens": 1471,
+      "cost_usd": 0.000294,
+      "wall_clock_s": 72.46,
+      "tool_choice_passed": false,
+      "tool_choice_detail": "actual ['get_employee_record', 'get_notice_period_rule', 'search_handbook'] NOT in expected [['get_employee_record', 'get_notice_period_rule']]",
+      "employee_id_checked": 1,
+      "employee_id_valid": 1,
+      "section_checked": 0,
+      "section_valid": 0,
+      "argument_checked": 1,
+      "argument_valid": 1,
+      "argument_issues": [],
+      "step_efficiency": 1.5,
+      "outcome_passed": false,
+      "zoo_modes": [
+        "loop_or_budget_blowout",
+        "wrong_tool_or_extra_call"
+      ],
+      "diagnostic_only": false,
+      "error": null
+    }
+  ]
+}

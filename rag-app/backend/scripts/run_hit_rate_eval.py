@@ -16,12 +16,18 @@ itself uses):
 from __future__ import annotations
 
 import asyncio
+import json
+from pathlib import Path
 
 from app.core.config import get_settings
 from app.retrieval.qdrant_store import QdrantStore
 from evals.hit_rate import compute_hit_rate_at_k, load_questions
 
 K = 3
+# Read by the frontend's Retrieval Lab panel (Week 3/4 showcase) -- this
+# script previously only printed its results, so there was nothing for the
+# UI to display until it had been run at least once.
+_RESULTS_PATH = Path(__file__).parent.parent / "evals" / "hit_rate_results.json"
 
 
 async def main() -> None:
@@ -60,6 +66,27 @@ async def main() -> None:
         print(f"{b['id']:<5} {'HIT' if b['hit'] else 'MISS':<10} {'HIT' if m['hit'] else 'MISS':<10} {b['question']}")
         if not b["hit"] or not m["hit"]:
             print(f"      expected={b['expected']} baseline_top{K}={b['actual_top_k']} mmr_top{K}={m['actual_top_k']}")
+
+    _RESULTS_PATH.write_text(
+        json.dumps(
+            {
+                "k": K,
+                "n_questions": len(questions),
+                "baseline_hit_rate": baseline_rate,
+                "mmr_hit_rate": mmr_rate,
+                "baseline_hits": baseline_hits,
+                "mmr_hits": mmr_hits,
+                "fixed": fixed,
+                "regressed": regressed,
+                "still_missed": still_missed,
+                "baseline_detail": baseline_detail,
+                "mmr_detail": mmr_detail,
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    print(f"\nResults written to {_RESULTS_PATH} (read by the frontend's Retrieval Lab panel).")
 
 
 if __name__ == "__main__":

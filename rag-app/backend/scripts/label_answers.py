@@ -28,44 +28,30 @@ terminal, not something to pipe/automate):
 """
 from __future__ import annotations
 
-import json
-from datetime import datetime, timezone
-from pathlib import Path
-
-from evals.week6_eval import load_raw_answers
-
-_LABELS_PATH = Path(__file__).parent.parent / "evals" / "labels_25.json"
-_CRITERION = "Is this answer fully grounded in the retrieved context, with no unsupported claims?"
-
-
-def _load_existing_labels() -> dict:
-    if _LABELS_PATH.exists():
-        return json.loads(_LABELS_PATH.read_text(encoding="utf-8"))
-    return {"criterion": _CRITERION, "labeled_at_first": None, "labeled_at_last": None, "labels": {}, "notes": {}}
-
-
-def _save(state: dict) -> None:
-    _LABELS_PATH.write_text(json.dumps(state, indent=2), encoding="utf-8")
+from evals.week6_eval import (
+    LABELING_CRITERION,
+    LABELS_PATH,
+    load_labels_state,
+    load_raw_answers,
+    record_label,
+    save_labels_state,
+)
 
 
 def main() -> None:
     answers = load_raw_answers()
-    state = _load_existing_labels()
+    state = load_labels_state()
     already = set(state["labels"])
     remaining = [a for a in answers if a["id"] not in already]
 
     if not remaining:
-        print(f"All {len(answers)} case(s) already labeled in {_LABELS_PATH}. Delete it to relabel from scratch.")
+        print(f"All {len(answers)} case(s) already labeled in {LABELS_PATH}. Delete it to relabel from scratch.")
         return
 
     print(f"Blind labeling -- {len(remaining)} of {len(answers)} case(s) remaining.")
-    print(f"Criterion: {_CRITERION}")
+    print(f"Criterion: {LABELING_CRITERION}")
     print("The judge has NOT been run on these yet -- your answer here is not influenced by it.")
     print("Answer y (pass/grounded), n (fail/not grounded), or q to save and quit.\n")
-
-    now = datetime.now(timezone.utc).isoformat()
-    if state["labeled_at_first"] is None:
-        state["labeled_at_first"] = now
 
     for i, ans in enumerate(remaining, 1):
         print(f"--- [{i}/{len(remaining)}] {ans['id']}  (mode: {ans['mode']}) ---")
@@ -85,18 +71,17 @@ def main() -> None:
         if choice == "q":
             break
 
-        state["labels"][ans["id"]] = choice == "y"
-        state["labeled_at_last"] = datetime.now(timezone.utc).isoformat()
-        _save(state)  # incremental -- a crash or Ctrl+C mid-session doesn't lose earlier labels
+        record_label(state, ans["id"], choice == "y")
+        save_labels_state(state)  # incremental -- a crash or Ctrl+C mid-session doesn't lose earlier labels
         print()
 
-    _save(state)
+    save_labels_state(state)
     done = len(state["labels"])
-    print(f"\nSaved {done}/{len(answers)} label(s) to {_LABELS_PATH}.")
+    print(f"\nSaved {done}/{len(answers)} label(s) to {LABELS_PATH}.")
     if done >= len(answers):
         print(
             "All cases labeled. Next: commit this file NOW, before running the judge --\n"
-            f"  git add {_LABELS_PATH.relative_to(_LABELS_PATH.parent.parent.parent)}\n"
+            f"  git add {LABELS_PATH.relative_to(LABELS_PATH.parent.parent.parent)}\n"
             '  git commit -m "Week 6: blind labels, predate judge run"\n'
             "then: python scripts/run_week6_eval.py"
         )

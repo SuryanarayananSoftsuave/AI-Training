@@ -16,12 +16,22 @@ so the four required numbers are all computed consistently between the
 agent and the workflow for comparison purposes. Treat the dollar figures
 as illustrative/relative, not a real billing claim, until checked against
 console.groq.com's current pricing.
+
+Week 8 (W8-Task-Set-C.md) addition: `require_employee_lookup` is the one
+code-level mitigation agents/trajectory_eval.py measures before/after --
+an "argument validation" gate (not a prompt change) that auto-injects a
+real get_employee_record call before the agent is allowed to finalize an
+answer about an employee it never actually looked up this turn. Default
+False, so every existing caller (this module's other callers, the
+/agents/* routes, race_agent_vs_workflow.py) is unaffected.
 """
 from __future__ import annotations
 
 import json
+import re
 import time
 from dataclasses import dataclass, field
+from typing import Awaitable, Callable
 
 from app.core.config import Settings
 from app.registry.session_store import SessionStore
@@ -32,6 +42,14 @@ from agents.conversation import ConversationState, render_conversation_block
 from agents.tools import TOOL_DESCRIPTIONS, get_employee_record, get_notice_period_rule, search_handbook
 
 PLACEHOLDER_COST_PER_1K_TOKENS = 0.0002  # NOT verified real pricing -- see module docstring
+
+# Deliberately a separate copy of workflow.py's identical pattern, not
+# imported from there -- workflow.py already imports FROM this module
+# (PLACEHOLDER_COST_PER_1K_TOKENS), so importing back would create a
+# circular import. dispatcher.py made the same "duplicate this one-line
+# regex rather than couple two agent modules together" call for the same
+# constant; this follows that established precedent.
+_EMPLOYEE_ID_RE = re.compile(r"\bE\d+\b")
 
 
 @dataclass
@@ -127,7 +145,14 @@ async def _call_step(
 async def _execute_tool(
     action: str, data: dict, settings: Settings, store: QdrantStore,
     conversation: ConversationState | None = None, session_store: SessionStore | None = None,
+    tool_overrides: dict[str, Callable[[dict], Awaitable[tuple[dict, str]]]] | None = None,
 ) -> tuple[dict, str]:
+    # Generic override hook (Week 8 bonus: agents/injection_playground.py) --
+    # lets a caller substitute how one action executes without threading
+    # injection-specific parameters through this core loop. None for every
+    # existing caller, so behavior is completely unchanged by default.
+    if tool_overrides and action in tool_overrides:
+        return await tool_overrides[action](data)
     if action == "get_employee_record":
         result = await get_employee_record(data["employee_id"])
         if "error" not in result and conversation is not None:
@@ -148,6 +173,8 @@ async def _execute_tool(
 async def run_agent(
     question: str, settings: Settings, store: QdrantStore, groq_api_key: str, model: str, budgets: Budgets,
     conversation: ConversationState | None = None, session_store: SessionStore | None = None,
+    require_employee_lookup: bool = False,
+    tool_overrides: dict[str, Callable[[dict], Awaitable[tuple[dict, str]]]] | None = None,
 ) -> AgentResult:
     # max_retries above the SDK's default of 2: a multi-turn conversation
     # (agents/conversation.py) can rack up enough calls in quick succession
@@ -159,6 +186,7 @@ async def run_agent(
     total_tokens = 0
     started = time.monotonic()
     iteration = 0
+    gate_corrected = False  # the mitigation only ever auto-corrects once per run -- avoids looping forever if the lookup itself errors
 
     while True:
         iteration += 1
@@ -178,9 +206,30 @@ async def run_agent(
         total_tokens += step_tokens
 
         if data.get("action") == "final_answer":
+            if require_employee_lookup and not gate_corrected:
+                relevant_ids = set(_EMPLOYEE_ID_RE.findall(question))
+                if conversation is not None and conversation.employee_id:
+                    relevant_ids.add(conversation.employee_id)
+                looked_up_ids = {s.action_input.get("employee_id") for s in steps if s.action == "get_employee_record"}
+                missing_ids = relevant_ids - looked_up_ids
+                if missing_ids:
+                    gate_corrected = True
+                    for missing_id in missing_ids:
+                        action_input, observation = await _execute_tool(
+                            "get_employee_record", {"employee_id": missing_id}, settings, store, conversation, session_store,
+                            tool_overrides,
+                        )
+                        steps.append(StepRecord(
+                            thought=f"[mitigation gate] {missing_id} was never looked up this turn -- "
+                            "re-confirming their record before finalizing an answer that names them.",
+                            action="get_employee_record", action_input=action_input, observation=observation,
+                        ))
+                    continue  # one real extra lap -- the "price paid" the mitigation costs
             elapsed = time.monotonic() - started
             cost = total_tokens / 1000 * PLACEHOLDER_COST_PER_1K_TOKENS
             return AgentResult(question, data.get("final_answer", ""), iteration, total_tokens, cost, elapsed, steps, None)
 
-        action_input, observation = await _execute_tool(data["action"], data, settings, store, conversation, session_store)
+        action_input, observation = await _execute_tool(
+            data["action"], data, settings, store, conversation, session_store, tool_overrides,
+        )
         steps.append(StepRecord(thought=data.get("thought", ""), action=data["action"], action_input=action_input, observation=observation))

@@ -157,12 +157,12 @@ def _live_batch_panel(client: BackendClient, settings: dict) -> None:
 
 
 def render_trace_batch_panel(client: BackendClient, settings: dict) -> None:
-    with st.expander(f"🧪 Batch trace generator ({len(_BATCH_QUESTIONS)} questions)", expanded=False):
-        st.caption(
-            "Runs a curated set of real HR questions through the live chat pipeline, using "
-            "the retrieval/model settings currently set in the sidebar for every question -- "
-            "same as a normal chat message. Each produces a genuine trace in "
-            "`data/traces/traces.jsonl`. Runs in the background, so the chat above stays "
-            "usable while it runs."
-        )
-        _live_batch_panel(client, settings)
+    st.subheader("🧪 Batch Trace Generator")
+    st.caption(
+        f"Runs {len(_BATCH_QUESTIONS)} curated real HR questions through the live chat pipeline, "
+        "using the retrieval/model settings currently set in the sidebar for every question -- "
+        "same as a normal chat message. Each produces a genuine trace in "
+        "`data/traces/successful_traces.jsonl`. Runs in the background, so the rest of the app "
+        "stays usable while it runs."
+    )
+    _live_batch_panel(client, settings)

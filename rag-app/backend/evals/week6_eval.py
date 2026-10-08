@@ -10,8 +10,13 @@ real user's question would hit -- not a simplified stand-in.
 from __future__ import annotations
 
 import json
+import os
+import tempfile
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from filelock import FileLock
 
 from app.core.config import Settings
 from app.llm.base import LLMClient
@@ -129,6 +134,87 @@ async def run_judge_on_answer(raw_answer: dict, judge: LLMClient, temperature: f
 
 _REFUSAL_CHECK = "out_of_jurisdiction_refused"
 LABELS_PATH = Path(__file__).parent / "labels_25.json"
+LABELING_CRITERION = "Is this answer fully grounded in the retrieved context, with no unsupported claims?"
+
+# label_answers.py (CLI) is single-process/sequential, so this lock was
+# never needed there -- but these functions are now ALSO called from a
+# concurrent web handler (POST /evals/week6/label), where two overlapping
+# requests could otherwise both read the same starting state and the
+# later save silently clobbers the earlier one's label. Same
+# lock + temp-file-swap convention as app/registry/json_store.py::DocumentRegistry.
+_LABELS_LOCK = FileLock(str(LABELS_PATH) + ".lock")
+
+
+def _read_labels_state_unlocked() -> dict:
+    if not LABELS_PATH.exists():
+        return {"criterion": LABELING_CRITERION, "labeled_at_first": None, "labeled_at_last": None, "labels": {}, "notes": {}}
+    return json.loads(LABELS_PATH.read_text(encoding="utf-8"))
+
+
+def _write_labels_state_unlocked(state: dict) -> None:
+    fd, tmp_path = tempfile.mkstemp(dir=LABELS_PATH.parent, prefix=".tmp_labels_")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(state, f, indent=2)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, LABELS_PATH)
+    except Exception:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+        raise
+
+
+def load_labels_state() -> dict:
+    """Shared by scripts/label_answers.py (CLI) and /evals/week6/label (the
+    UI blind-labeling panel) so both write the exact same labels_25.json
+    shape -- either one can resume where the other left off. A read-only
+    snapshot -- see `record_label_atomic` for the safe read-modify-write
+    primitive a concurrent caller must use instead of load+mutate+save.
+    """
+    with _LABELS_LOCK:
+        return _read_labels_state_unlocked()
+
+
+def save_labels_state(state: dict) -> None:
+    with _LABELS_LOCK:
+        _write_labels_state_unlocked(state)
+
+
+def record_label(state: dict, case_id: str, grounded: bool) -> dict:
+    """Mutates and returns `state` with one new label recorded. Raises if
+    `case_id` is already labeled -- relabeling silently would undermine the
+    blind-labeling protocol's ordering proof, so callers must delete the
+    existing entry deliberately rather than overwrite it by accident.
+    `labeled_at_first`/`labeled_at_last` are what proves this file predates
+    any judge run, once committed.
+
+    Pure in-memory mutation -- safe for the CLI's existing
+    load-once/mutate-per-answer/save-after-each loop (single process, no
+    concurrency risk). A concurrent web caller must use
+    `record_label_atomic` instead, not this function directly.
+    """
+    if case_id in state["labels"]:
+        raise ValueError(f"case {case_id} is already labeled -- delete it from labels_25.json first to relabel")
+    now = datetime.now(timezone.utc).isoformat()
+    if state["labeled_at_first"] is None:
+        state["labeled_at_first"] = now
+    state["labels"][case_id] = grounded
+    state["labeled_at_last"] = now
+    return state
+
+
+def record_label_atomic(case_id: str, grounded: bool) -> dict:
+    """The safe primitive for a concurrent web caller: acquires the lock
+    ONCE for the full read -> mutate -> write cycle, closing the window
+    that calling load_labels_state()+record_label()+save_labels_state() as
+    three separate steps would leave open between two overlapping requests.
+    """
+    with _LABELS_LOCK:
+        state = _read_labels_state_unlocked()
+        record_label(state, case_id, grounded)
+        _write_labels_state_unlocked(state)
+        return state
 
 
 async def grade_one(case: dict, settings: Settings, store: QdrantStore, generator: LLMClient, provider: str) -> dict:

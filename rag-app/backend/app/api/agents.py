@@ -6,9 +6,13 @@ picks or types.
 from __future__ import annotations
 
 import csv
+import json
+import logging
 from pathlib import Path
+from typing import AsyncIterator
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from app.core.config import Settings, get_settings
@@ -16,6 +20,7 @@ from app.core.dependencies import get_agent_conversations, get_session_store, ge
 from app.registry.session_store import SessionStore
 from app.retrieval.qdrant_store import QdrantStore
 
+from agents import injection_playground, trajectory_eval
 from agents.conversation import ConversationState, Turn, append_turn
 from agents.dispatcher import run_dispatch
 from agents.react_agent import Budgets, run_agent
@@ -23,6 +28,7 @@ from agents.workflow import run_workflow
 from groq import AsyncGroq
 
 router = APIRouter(prefix="/agents", tags=["agents"])
+logger = logging.getLogger(__name__)
 
 # Where scripts/race_agent_vs_workflow.py, race_dispatcher.py, and
 # branching_case_demo.txt's live test wrote their real, already-verified
@@ -220,4 +226,127 @@ async def results(session_store: SessionStore = Depends(get_session_store)) -> R
         branching_case_demo=_read_text("branching_case_demo.txt"),
         third_tool_diff=_read_text("third_tool_diff.md"),
         persisted_sessions=session_store.list_all(),
+    )
+
+
+class TrajectoryRunRequest(BaseModel):
+    mitigation: bool = False
+
+
+async def _trajectory_sse_events(
+    request: TrajectoryRunRequest, settings: Settings, store: QdrantStore, session_store: SessionStore,
+) -> AsyncIterator[str]:
+    """Week 8 (W8-Task-Set-C.md): runs every case in
+    agents/fixtures/trajectory_cases.json fresh, through the real agent
+    (agents.trajectory_eval.run_case -- the same function
+    scripts/run_trajectory_eval.py calls), streaming one progress event per
+    case exactly like /evals/week6/run does. `mitigation` toggles
+    react_agent.py's require_employee_lookup gate; the resulting report is
+    written to agents/trajectory_results_{before,after}.json either way, so
+    a UI-triggered run and a CLI run produce the identical on-disk artifact.
+    """
+    cases = trajectory_eval.load_cases()
+    total = len(cases)
+    results: list[trajectory_eval.CaseResult] = []
+
+    logger.info("Week 8 trajectory run started (mitigation=%s): %d case(s)", request.mitigation, total)
+
+    for i, case in enumerate(cases, 1):
+        yield f"event: progress\ndata: {json.dumps({'i': i, 'total': total, 'id': case['id'], 'status': 'running'})}\n\n"
+        # trajectory_eval.run_case never raises -- a failed case comes back
+        # as a CaseResult with `error` set, so one bad case can no longer
+        # discard the other 9 cases' already-completed real results.
+        result = await trajectory_eval.run_case(
+            case, settings, store, settings.groq_api_key, settings.groq_generator_model, request.mitigation, session_store,
+        )
+        results.append(result)
+        logger.info(
+            "[%d/%d] %s: %s", i, total, case["id"],
+            f"ERRORED ({result.error})" if result.error else f"tool_choice={result.tool_choice_passed} outcome={result.outcome_passed}",
+        )
+        yield (
+            "event: progress\ndata: "
+            + json.dumps({
+                "i": i, "total": total, "id": case["id"], "status": "errored" if result.error else "done",
+                "tool_choice_passed": result.tool_choice_passed, "outcome_passed": result.outcome_passed,
+                "zoo_modes": result.zoo_modes, "error": result.error,
+            })
+            + "\n\n"
+        )
+
+    report = trajectory_eval.build_report(results)
+    tag = "after" if request.mitigation else "before"
+    trajectory_eval.save_report(report, tag)
+    logger.info(
+        "Week 8 trajectory run finished (mitigation=%s): %d/%d errored, tool_choice_accuracy=%s%%, gap=%s",
+        request.mitigation, report["n_errored"], total, report["tool_choice_accuracy"], report["gap"],
+    )
+    yield f"event: final\ndata: {json.dumps({'report': report, 'tag': tag})}\n\n"
+
+
+@router.post("/trajectory/run")
+async def run_trajectory(
+    request: TrajectoryRunRequest,
+    settings: Settings = Depends(get_settings),
+    store: QdrantStore = Depends(get_store),
+    session_store: SessionStore = Depends(get_session_store),
+) -> StreamingResponse:
+    return StreamingResponse(_trajectory_sse_events(request, settings, store, session_store), media_type="text/event-stream")
+
+
+class TrajectoryResultsResponse(BaseModel):
+    before: dict | None
+    after: dict | None
+    regression: dict | None
+
+
+@router.get("/trajectory/results", response_model=TrajectoryResultsResponse)
+async def trajectory_results() -> TrajectoryResultsResponse:
+    """Reads whatever's already on disk (from a prior live run or a
+    committed CLI run) without re-running anything -- same
+    file-not-found-is-not-an-error convention as /agents/results.
+    """
+    before = trajectory_eval.load_report("before")
+    after = trajectory_eval.load_report("after")
+    regression = trajectory_eval.regression_diff(before, after) if before and after else None
+    return TrajectoryResultsResponse(before=before, after=after, regression=regression)
+
+
+class InjectionAttackRequest(BaseModel):
+    sanitize: bool = False
+
+
+class InjectionAttackResponse(BaseModel):
+    question: str
+    answer: str | None
+    steps: list[StepOut]
+    guardrail_passed: bool
+    guardrail_reason: str
+    sanitize_applied: bool
+
+
+@router.post("/injection/attack", response_model=InjectionAttackResponse)
+async def injection_attack(
+    request: InjectionAttackRequest,
+    settings: Settings = Depends(get_settings),
+    store: QdrantStore = Depends(get_store),
+) -> InjectionAttackResponse:
+    """Week 8 bonus: a real, live attack against the real agent (never a
+    canned example) -- E1's poisoned manager_comment is only ever surfaced
+    through this endpoint's override, so every other caller of run_agent
+    (including the graded trajectory eval) is completely unaffected.
+    """
+    result, guardrail_passed, guardrail_reason = await injection_playground.run_attack(
+        settings, store, settings.groq_api_key, settings.groq_generator_model, sanitize=request.sanitize,
+    )
+    return InjectionAttackResponse(
+        question=injection_playground.ATTACK_QUESTION,
+        answer=result.answer,
+        steps=[
+            StepOut(thought=s.thought, action=s.action, action_input=s.action_input, observation=s.observation)
+            for s in result.steps
+        ],
+        guardrail_passed=guardrail_passed,
+        guardrail_reason=guardrail_reason,
+        sanitize_applied=request.sanitize,
     )

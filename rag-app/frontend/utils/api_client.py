@@ -113,12 +113,154 @@ class BackendClient:
         response.raise_for_status()
         return response.json()
 
+    def run_trajectory_eval(self, mitigation: bool = False) -> Iterator[tuple[str, dict]]:
+        """Week 8: streams one progress event per case (real agent calls),
+        then one final event with the full trajectory report. Same SSE
+        shape as run_week6_eval.
+        """
+        with self._client.stream(
+            "POST", "/agents/trajectory/run", json={"mitigation": mitigation}, timeout=_EVAL_TIMEOUT,
+        ) as response:
+            response.raise_for_status()
+            event_type: str | None = None
+            for line in response.iter_lines():
+                if line.startswith("event:"):
+                    event_type = line[len("event:"):].strip()
+                elif line.startswith("data:") and event_type is not None:
+                    yield (event_type, json.loads(line[len("data:"):].strip()))
+                    event_type = None
+
+    def get_trajectory_results(self) -> dict:
+        response = self._client.get("/agents/trajectory/results")
+        response.raise_for_status()
+        return response.json()
+
+    def run_injection_attack(self, sanitize: bool = False) -> dict:
+        response = self._client.post("/agents/injection/attack", json={"sanitize": sanitize})
+        response.raise_for_status()
+        return response.json()
+
     def get_agent_results(self) -> dict:
         """Week 7 showcase: the real, already-generated deliverable files
         (race.csv, dispatch_race.csv, verdict.txt, etc.) read straight off
         disk by the backend -- nothing recomputed here.
         """
         response = self._client.get("/agents/results")
+        response.raise_for_status()
+        return response.json()
+
+    def get_week6_labeling_state(self) -> dict:
+        response = self._client.get("/evals/week6/labeling-state")
+        response.raise_for_status()
+        return response.json()
+
+    def get_week6_next_unlabeled(self) -> dict:
+        response = self._client.get("/evals/week6/next-unlabeled")
+        response.raise_for_status()
+        return response.json()
+
+    def submit_week6_label(self, case_id: str, grounded: bool) -> dict:
+        response = self._client.post("/evals/week6/label", json={"case_id": case_id, "grounded": grounded})
+        response.raise_for_status()
+        return response.json()
+
+    def compare_retrieval(self, query: str, top_k: int, doc_ids: list[str] | None = None) -> dict:
+        """Week 3/4 lab: 4-way retrieval comparison (semantic/hybrid x
+        MMR off/on) on one question, no generation or judging.
+        """
+        response = self._client.post("/retrieval-lab/compare", json={"query": query, "top_k": top_k, "doc_ids": doc_ids})
+        response.raise_for_status()
+        return response.json()
+
+    def compare_chunking(self, text: str, chunk_size_a: int, overlap_a: int, chunk_size_b: int, overlap_b: int) -> dict:
+        """Week 3 lab: chunk the same text at two settings, no Qdrant/LLM call."""
+        response = self._client.post(
+            "/retrieval-lab/chunk-preview",
+            json={"text": text, "chunk_size_a": chunk_size_a, "overlap_a": overlap_a, "chunk_size_b": chunk_size_b, "overlap_b": overlap_b},
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def get_hit_rate_results(self) -> dict | None:
+        """Week 4: the real hit-rate@3 numbers from scripts/run_hit_rate_eval.py,
+        or None if it hasn't been run yet.
+        """
+        response = self._client.get("/retrieval-lab/hit-rate-results")
+        response.raise_for_status()
+        return response.json()
+
+    def get_week5_sample(self, seed: int, n: int = 20) -> dict:
+        response = self._client.get("/analysis/week5/sample", params={"seed": seed, "n": n})
+        response.raise_for_status()
+        return response.json()
+
+    def get_week5_trace_detail(self, trace_id: str) -> dict:
+        response = self._client.get(f"/analysis/week5/trace/{trace_id}")
+        response.raise_for_status()
+        return response.json()
+
+    def set_week5_sentence(self, trace_id: str, sentence: str) -> dict:
+        response = self._client.post("/analysis/week5/sentence", json={"trace_id": trace_id, "sentence": sentence})
+        response.raise_for_status()
+        return response.json()
+
+    def set_week5_modes(self, modes: list[dict]) -> dict:
+        response = self._client.post("/analysis/week5/modes", json={"modes": modes})
+        response.raise_for_status()
+        return response.json()
+
+    def set_week5_prediction(self, mode: str, change: str, expected_delta: str) -> dict:
+        response = self._client.post(
+            "/analysis/week5/prediction", json={"mode": mode, "change": change, "expected_delta": expected_delta}
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def set_week5_benchmark_note(self, text: str) -> dict:
+        response = self._client.post("/analysis/week5/benchmark-note", json={"text": text})
+        response.raise_for_status()
+        return response.json()
+
+    def export_week5(self) -> dict:
+        response = self._client.get("/analysis/week5/export")
+        response.raise_for_status()
+        return response.json()
+
+    def get_mcp_tools(self, config: str = "one") -> dict:
+        """Week 9: a live tools/list result -- 1 server or 2, per `config`."""
+        response = self._client.get("/mcp/tools", params={"config": config})
+        response.raise_for_status()
+        return response.json()
+
+    def get_mcp_agent_diff(self) -> dict:
+        response = self._client.get("/mcp/agent-diff")
+        response.raise_for_status()
+        return response.json()
+
+    def get_mcp_config_diff(self) -> dict:
+        response = self._client.get("/mcp/config-diff")
+        response.raise_for_status()
+        return response.json()
+
+    def mcp_wire_capture(self, server: str, tool: str, args: dict) -> dict:
+        response = self._client.post(
+            "/mcp/wire-capture", json={"server": server, "tool": tool, "args": args}, timeout=_EVAL_TIMEOUT
+        )
+        response.raise_for_status()
+        return response.json()
+
+    def mcp_error_demo(self, version: str) -> dict:
+        response = self._client.post("/mcp/error-demo", json={"version": version}, timeout=_EVAL_TIMEOUT)
+        response.raise_for_status()
+        return response.json()
+
+    def ask_mcp(self, question: str) -> dict:
+        response = self._client.post("/mcp/ask", json={"question": question}, timeout=_EVAL_TIMEOUT)
+        response.raise_for_status()
+        return response.json()
+
+    def get_mcp_risk_note(self) -> dict:
+        response = self._client.get("/mcp/risk-note")
         response.raise_for_status()
         return response.json()
 
